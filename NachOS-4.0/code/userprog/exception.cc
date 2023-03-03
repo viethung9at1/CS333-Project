@@ -57,6 +57,26 @@ void PCIncrease(){
 	  /* set next programm counter for brach execution */
 	  kernel->machine->WriteRegister(NextPCReg, kernel->machine->ReadRegister(PCReg)+4);
 }
+char* User2System(int virtAddr,int limit) 
+{ 
+	int i;// index 
+	int oneChar; 
+	char* kernelBuf = NULL; 
+	kernelBuf = new char[limit +1];//need for terminal string 
+	if (kernelBuf == NULL) 
+	return kernelBuf; 
+	memset(kernelBuf,0,limit+1); 
+	//printf("\n Filename u2s:"); 
+	for (i = 0 ; i < limit ;i++) 
+	{ 
+	kernel->machine->ReadMem(virtAddr+i,1,&oneChar); 
+	kernelBuf[i] = (char)oneChar; 
+	//printf("%c",kernelBuf[i]); 
+	if (oneChar == 0) 
+	break; 
+	} 
+	return kernelBuf; 
+}
 void
 ExceptionHandler(ExceptionType which)
 {
@@ -104,14 +124,45 @@ ExceptionHandler(ExceptionType which)
 	ASSERTNOTREACHED();
 
 	break;
-
+	case SC_Create:
+	{
+		int virtAddr;
+		char* filename;
+		DEBUG('a',"\n SC_Create call ..."); 
+		DEBUG('a',"\n Reading virtual address of filename");
+		//Get data from the argument, the r4 register
+		virtAddr=kernel->machine->ReadRegister(4);
+		DEBUG('a',"\nReading filename");
+		int MaxFileLength=32;
+		filename=User2System(virtAddr, MaxFileLength+1);
+		if (filename == NULL) 
+		{ 
+			printf("\n Not enough memory in system"); 
+			DEBUG('a',"\n Not enough memory in system"); 
+			kernel->machine->WriteRegister(2,-1); 
+			delete filename; 
+			return; 
+		} 
+		DEBUG('a',"\n Finish reading filename."); 
+		if (!kernel->fileSystem->Create(filename)) 
+		{ 
+			printf("\n Error create file '%s'",filename); 
+			kernel->machine->WriteRegister(2,-1); 
+			delete filename; 
+			return; 
+			} 
+			kernel->machine->WriteRegister(2,0); 
+			delete filename; 
+			cerr<<"File create completed and sucessful\n";
+			return;
+			break; 
+		}
       default:
 	cerr << "Unexpected system call " << type << "\n";
 	break;
-      }
-      break;
+	}
     default:
-      cerr << "Unexpected user mode exception" << (int)which << "\n";
+      cerr << "Unexpected user mode exception: " << (int)which << "\n";
       break;
     }
     ASSERTNOTREACHED();
