@@ -174,6 +174,7 @@ int ThreadJoin(ThreadId id);
  */
 void ThreadExit(int ExitCode);	
 
+const int MaxFileLength=32;
 #endif /* IN_ASM */
 
 #endif /* SYSCALL_H */

@@ -20,7 +20,7 @@
 // Copyright (c) 1992-1996 The Regents of the University of California.
 // All rights reserved.  See copyright.h for copyright notice and limitation 
 // of liability and disclaimer of warranty provisions.
-
+#include"sysdep.h"
 #include "copyright.h"
 #include "main.h"
 #include "syscall.h"
@@ -133,7 +133,6 @@ ExceptionHandler(ExceptionType which)
 		//Get data from the argument, the r4 register
 		virtAddr=kernel->machine->ReadRegister(4);
 		DEBUG('a',"\nReading filename");
-		int MaxFileLength=32;
 		filename=User2System(virtAddr, MaxFileLength+1);
 		if (filename == NULL) 
 		{ 
@@ -141,6 +140,7 @@ ExceptionHandler(ExceptionType which)
 			DEBUG('a',"\n Not enough memory in system"); 
 			kernel->machine->WriteRegister(2,-1); 
 			delete filename; 
+			PCIncrease();
 			return; 
 		} 
 		DEBUG('a',"\n Finish reading filename."); 
@@ -154,8 +154,53 @@ ExceptionHandler(ExceptionType which)
 			kernel->machine->WriteRegister(2,0); 
 			delete filename; 
 			cerr<<"File create completed and sucessful\n";
+			PCIncrease();
 			return;
 			break; 
+		}
+		case SC_Read:
+		{
+			int virtAddr = kernel->machine->ReadRegister(4); 
+			int type = kernel->machine->ReadRegister(5); 
+			char* filename;
+			filename = User2System(virtAddr, MaxFileLength);			
+			int freeSlot = kernel->fileSystem->FindFreeSlot();
+			if (freeSlot != -1) //Process when empty slot exists
+			{
+				if (type == 0 || type == 1) 
+				{
+					if ((kernel->fileSystem->openingFile[freeSlot] = kernel->fileSystem->Open(filename, type)) != NULL) //Sucessful
+						kernel->machine->WriteRegister(2, freeSlot);
+				}
+				else if (type == 2) // stdin
+					kernel->machine->WriteRegister(2, 0); 
+				else // stdout
+					kernel->machine->WriteRegister(2, 1); 
+				delete[] filename;
+				break;
+			}
+			kernel->machine->WriteRegister(2, -1); 
+			delete[] filename;
+			PCIncrease();
+			return;
+			ASSERTNOTREACHED();
+			break;
+		}
+		case SC_Close:
+		{
+			int fileID=kernel->machine->ReadRegister(4);
+			if(fileID>=0&&fileID<=MaxFile)
+				if(kernel->fileSystem->openingFile[fileID]){
+					delete kernel->fileSystem->openingFile[fileID];
+					kernel->fileSystem->openingFile[fileID]=NULL;
+					kernel->machine->WriteRegister(2,0);
+					break;
+				}
+			kernel->machine->WriteRegister(2,-1);
+			PCIncrease();
+			return;
+			ASSERTNOTREACHED();
+			break;
 		}
       default:
 	cerr << "Unexpected system call " << type << "\n";

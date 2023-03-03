@@ -36,29 +36,56 @@
 #include "copyright.h"
 #include "sysdep.h"
 #include "openfile.h"
-
+const int MaxFile=20;
 #ifdef FILESYS_STUB 		// Temporarily implement file system calls as 
 				// calls to UNIX, until the real file system
 				// implementation is available
 class FileSystem {
   public:
-    FileSystem() {}
-
+	int index=0;
+	OpenFile** openingFile;
+    FileSystem(){
+		openingFile=new OpenFile*[MaxFile];
+		index=0;
+		for(int i=0;i<MaxFile;i++) openingFile[i]=NULL;
+		this->Create("stdin");
+		this->Create("stdout");
+		openingFile[index++]=this->Open("stdin",2);
+		openingFile[index++]= this->Open("stdout",3);
+	}
+	~FileSystem(){
+		for(int i=0;i<10;i++) 
+			if(openingFile[i]!=NULL) delete openingFile[i];
+		delete[] openingFile;
+	}
     bool Create(char *name) {
 	int fileDescriptor = OpenForWrite(name);
-
+	OpenFile* Open(char* name, int type);
 	if (fileDescriptor == -1) return FALSE;
 	Close(fileDescriptor); 
 	return TRUE; 
 	}
-
     OpenFile* Open(char *name) {
 	  int fileDescriptor = OpenForReadWrite(name, FALSE);
 
 	  if (fileDescriptor == -1) return NULL;
 	  return new OpenFile(fileDescriptor);
       }
+	OpenFile* Open(char *name, int type) {
+		int fileDescriptor = OpenForReadWrite(name, FALSE);
 
+		if (fileDescriptor == -1) return NULL;
+		//index++;
+		return new OpenFile(fileDescriptor, type);
+	}
+	int FindFreeSlot()
+	{
+		for(int i = 2; i < 10; i++)
+		{
+			if(openingFile[i] == NULL) return i;		
+		}
+		return -1;
+	}
     bool Remove(char *name) { return Unlink(name) == 0; }
 
 };
@@ -83,7 +110,7 @@ class FileSystem {
     void List();			// List all the files in the file system
 
     void Print();			// List all the files and their contents
-
+	OpenFile* Open(char* name, int type);
   private:
    OpenFile* freeMapFile;		// Bit map of free disk blocks,
 					// represented as a file

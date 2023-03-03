@@ -31,7 +31,7 @@ class OpenFile {
   public:
     OpenFile(int f) { file = f; currentOffset = 0; }	// open the file
     ~OpenFile() { Close(file); }			// close the file
-
+	OpenFile(int f, int type){file=f; currentOffset=0; t=type;}
     int ReadAt(char *into, int numBytes, int position) { 
     		Lseek(file, position, 0); 
 		return ReadPartial(file, into, numBytes); 
@@ -53,7 +53,7 @@ class OpenFile {
 		}
 
     int Length() { Lseek(file, 0, 2); return Tell(file); }
-    
+	int t;
   private:
     int file;
     int currentOffset;
@@ -64,10 +64,10 @@ class FileHeader;
 
 class OpenFile {
   public:
+	int type; //0: rw, 1: r, 2: stdin, 3: stdout
     OpenFile(int sector);		// Open a file whose header is located
 					// at "sector" on the disk
     ~OpenFile();			// Close the file
-
     void Seek(int position); 		// Set the position from which to 
 					// start reading/writing -- UNIX lseek
 
