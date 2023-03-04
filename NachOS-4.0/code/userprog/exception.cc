@@ -269,11 +269,11 @@ ExceptionHandler(ExceptionType which)
 			PCIncrease();
 			return;
 		}
-		/*case SC_Write:
+		case SC_Write:
 		{
 			int virAddr=kernel->machine->ReadRegister(4);
 			int charCnt=kernel->machine->ReadRegister(5);
-			int fileID=kernel->machine->ReadRegister(6);
+			int id=kernel->machine->ReadRegister(6);
 			int oldPosition;
 			int newPosition;
 			char *buf;
@@ -289,16 +289,38 @@ ExceptionHandler(ExceptionType which)
 				PCIncrease();
 				return;
 			}
-			if (kernel->fileSystem->openingFile[id]->type == 1 || kernel->fileSystem->openf[id]->type == 2)
+			if (kernel->fileSystem->openingFile[id]->t == 1 || kernel->fileSystem->openingFile[id]->t == 2)
 			{
 				printf("\nCan't open readonly file or stdin file");
 				kernel->machine->WriteRegister(2, -1);
-				IncreasePC();
+				PCIncrease();
 				return;
 			}
 			oldPosition=kernel->fileSystem->openingFile[id]->GetCurrentPos();
-			
-		}*/
+			buf=User2System(virAddr, charCnt);
+			if(kernel->fileSystem->openingFile[id]->t==0){
+				if(kernel->fileSystem->openingFile[id]->Write(buf,charCnt)>0){
+					newPosition=kernel->fileSystem->openingFile[id]->GetCurrentPos();
+					kernel->machine->WriteRegister(2,newPosition-oldPosition);
+					delete buf;
+					PCIncrease();
+				return;
+				}
+			}
+			if(kernel->fileSystem->openingFile[id]->t==3){
+				int i=0;
+				while(buf[i]!=0&&buf[i]!='\n'){
+					kernel->synchConsoleOut->PutChar(buf[i]);
+					i++;
+				}
+				buf[i]='\n';
+				kernel->synchConsoleOut->PutChar(buf[i]);
+				kernel->machine->WriteRegister(2,i-1);
+				delete buf;
+				PCIncrease();
+				return;
+			}
+		}
       default:
 	cerr << "Unexpected system call " << type << "\n";
 	break;

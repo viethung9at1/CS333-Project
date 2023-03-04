@@ -54,7 +54,7 @@ class OpenFile {
 
     int Length() { Lseek(file, 0, 2); return Tell(file); }
 	int GetCurrentPos(){currentOffset=Tell(file); return currentOffset;}
-	int t;
+	int t; //0: rw, 1: r, 2: stdin, 3: stdout
   private:
     int file;
     int currentOffset;
@@ -65,7 +65,7 @@ class FileHeader;
 
 class OpenFile {
   public:
-	int type; //0: rw, 1: r, 2: stdin, 3: stdout
+	int t; //0: rw, 1: r, 2: stdin, 3: stdout
     OpenFile(int sector);		// Open a file whose header is located
 					// at "sector" on the disk
     ~OpenFile();			// Close the file
