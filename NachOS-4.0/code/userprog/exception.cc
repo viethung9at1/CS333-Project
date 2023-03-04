@@ -320,6 +320,47 @@ ExceptionHandler(ExceptionType which)
 				PCIncrease();
 				return;
 			}
+			break;
+			ASSERTNOTREACHED();
+		}
+		case SC_Seek:
+		{
+			int position=kernel->machine->ReadRegister(4);
+			int id=kernel->machine->ReadRegister(5);
+			if(id<0||id>MaxFile) {
+				cerr<<"Outside file table\n";
+				kernel->machine->WriteRegister(2,-1);
+				PCIncrease();
+				return;
+			}
+			if(kernel->fileSystem->openingFile==NULL){
+				cerr<<"File not exists\n";
+				kernel->machine->WriteRegister(2,-1);
+				PCIncrease();
+				return;
+			}
+			if(id==0||id==1){
+				cerr<<"Cannot call seek on console\n";
+				kernel->machine->WriteRegister(2,-1);
+				PCIncrease();
+				return;
+			}
+			if(position==-1) position=kernel->fileSystem->openingFile[id]->Length();
+			else position=position;
+			if (position > kernel->fileSystem->openingFile[id]->Length() || position < 0)
+			{
+				cerr<<"Cannot seek to this position";
+				kernel->machine->WriteRegister(2, -1);
+			}
+			else
+			{
+				kernel->fileSystem->openingFile[id]->Seek(position);
+				kernel->machine->WriteRegister(2, position);
+			}
+			PCIncrease();
+			return;
+			break;
+			ASSERTNOTREACHED();
 		}
       default:
 	cerr << "Unexpected system call " << type << "\n";
