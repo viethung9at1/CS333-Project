@@ -77,6 +77,19 @@ char* User2System(int virtAddr,int limit)
 	} 
 	return kernelBuf; 
 }
+int System2User(int virtAddr, int len, char* buffer)
+{
+	if (len < 0) return -1;
+	if (len == 0)return len;
+	int i = 0;
+	int oneChar = 0;
+	do{
+		oneChar = (int)buffer[i];
+		kernel->machine->WriteMem(virtAddr + i, 1, oneChar);
+		i++;
+	} while (i < len && oneChar != 0);
+	return i;
+}
 void
 ExceptionHandler(ExceptionType which)
 {
@@ -158,12 +171,12 @@ ExceptionHandler(ExceptionType which)
 			return;
 			break; 
 		}
-		case SC_Read:
+		case SC_Open:
 		{
-			int virtAddr = kernel->machine->ReadRegister(4); 
+			int virAddr = kernel->machine->ReadRegister(4); 
 			int type = kernel->machine->ReadRegister(5); 
 			char* filename;
-			filename = User2System(virtAddr, MaxFileLength);			
+			filename = User2System(virAddr, MaxFileLength);			
 			int freeSlot = kernel->fileSystem->FindFreeSlot();
 			if (freeSlot != -1) //Process when empty slot exists
 			{
@@ -202,6 +215,90 @@ ExceptionHandler(ExceptionType which)
 			ASSERTNOTREACHED();
 			break;
 		}
+		case SC_Read:
+		{
+			int virAddr=kernel->machine->ReadRegister(4);
+			int charCnt=kernel->machine->ReadRegister(5);
+			int id=kernel->machine->ReadRegister(6);
+			int oldPosition, newPosition;
+			char* buf;
+			if(id<0||id>MaxFile) {
+				cerr<<"Read failed\n";
+				kernel->machine->WriteRegister(2,-1);
+				PCIncrease();
+				return;
+			}
+			if(kernel->fileSystem->openingFile[id]==NULL){
+				cerr<<"File not exited\n";
+				kernel->machine->WriteRegister(2,-1);
+				PCIncrease();
+				return;
+			}
+			if(kernel->fileSystem->openingFile[id]->t==3){
+				cerr<"Cannot print stdout\n";
+				kernel->machine->WriteRegister(2,-1);
+				PCIncrease();
+				return;
+			}
+			oldPosition=kernel->fileSystem->openingFile[id]->GetCurrentPos();
+			buf=User2System(virAddr, charCnt);
+			if(kernel->fileSystem->openingFile[id]->t==2){
+				int size=0;
+				char t=NULL, *tmp=new char[charCnt+1];
+				while(size<charCnt){
+					t=kernel->synchConsoleIn->GetChar();
+					tmp[size]=t;
+					if(t=='\n') break;
+					size++;
+				}
+				tmp[size+1]='\0';
+				buf=tmp;
+				System2User(virAddr,size, buf);
+				kernel->machine->WriteRegister(2,size);
+				delete buf, tmp, t;
+				PCIncrease();
+				return;
+			}
+			if((kernel->fileSystem->openingFile[id]->Read(buf, charCnt))>0){
+				newPosition=kernel->fileSystem->openingFile[id]->GetCurrentPos();
+				System2User(virAddr, newPosition-oldPosition, buf);
+				kernel->machine->WriteRegister(2, newPosition-oldPosition);
+			}
+			else kernel->machine->WriteRegister(2,0);
+			delete buf;
+			PCIncrease();
+			return;
+		}
+		/*case SC_Write:
+		{
+			int virAddr=kernel->machine->ReadRegister(4);
+			int charCnt=kernel->machine->ReadRegister(5);
+			int fileID=kernel->machine->ReadRegister(6);
+			int oldPosition;
+			int newPosition;
+			char *buf;
+			if(id<0||id>MaxFile){
+				cerr<<"Outside file table\n";
+				kernel->machine->WriteRegister(2,-1);
+				PCIncrease();
+				return;
+			}
+			if(kernel->fileSystem->openingFile[id]==NULL){
+				cerr<<"Can't open file\n";
+				kernel->machine->WriteRegister(2,-1);
+				PCIncrease();
+				return;
+			}
+			if (kernel->fileSystem->openingFile[id]->type == 1 || kernel->fileSystem->openf[id]->type == 2)
+			{
+				printf("\nCan't open readonly file or stdin file");
+				kernel->machine->WriteRegister(2, -1);
+				IncreasePC();
+				return;
+			}
+			oldPosition=kernel->fileSystem->openingFile[id]->GetCurrentPos();
+			
+		}*/
       default:
 	cerr << "Unexpected system call " << type << "\n";
 	break;

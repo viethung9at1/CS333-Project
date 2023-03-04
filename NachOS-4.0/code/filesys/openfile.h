@@ -53,6 +53,7 @@ class OpenFile {
 		}
 
     int Length() { Lseek(file, 0, 2); return Tell(file); }
+	int GetCurrentPos(){currentOffset=Tell(file); return currentOffset;}
 	int t;
   private:
     int file;
