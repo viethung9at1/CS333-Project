@@ -2,19 +2,19 @@
 # All rights reserved.  See copyright.h for copyright notice and limitation 
 # of liability and disclaimer of warranty provisions.
 #
-# This is a GNU Makefile.  It must be used with the GNU make program.
+# This is a GNU .  It must be used with the GNU make program.
 # At UW, the GNU make program is /software/gnu/bin/make.
 # In many other places it is known as "gmake".
 # You may wish to include /software/gnu/bin/ early in your command
 # search path, so that you will be using GNU make when you type "make".
 #
-# About this Makefile:
+# About this :
 # --------------------
 #
-#  This Makefile is used to build the Nachos system, which includes
+#  This  is used to build the Nachos system, which includes
 #   the MIPS machine simulation and a simple operating system.
 #
-#  There is a separate Makefile, in the "test" directory, that is
+#  There is a separate , in the "test" directory, that is
 #   used to build the Nachos test programs (which run on the
 #   simulated machine).
 #
@@ -25,23 +25,23 @@
 #   build directory (build.other) for those who wish to try
 #   building Nachos on other platforms.
 #
-#  This Makefile appears to be located in all of the build directories.
+#  This  appears to be located in all of the build directories.
 #  If you edit it in one directory, the copies in all of the other
 #  directories appear to change as well.  This is the desired behaviour,
 #  since this file is machine independent.  (The file actually lives
 #  in build.solaris, with symbolic links from the other build directories.)
 #
 #  The platform-dependent parts of make's instructions are located
-#  in the file Makefile.dep.
-#  There is a different Makefile.dep in each build directory.
+#  in the file .dep.
+#  There is a different .dep in each build directory.
 #
 #  If you are in the MFCF environment, you should not have to edit
-#  the Makefile.dep files by hand.  Any changes to the make instructions
+#  the .dep files by hand.  Any changes to the make instructions
 #  can be made in this file (see the instructions below) - they will
 #  apply no matter where you build Nachos.
 #  If you are not in the MFCF environment, e.g., if you are trying
 #  to build Nachos on Linux at home, you will probably need
-#  to edit Makefile.dep (in the appropriate build directory) to
+#  to edit .dep (in the appropriate build directory) to
 #  customize the make procedure to your environment.
 #
 # How to build Nachos for the first time:
@@ -70,7 +70,7 @@
 #
 #   (2) Type "make depend"
 #		- this computes file dependencies and records them
-#			at the end of the file Makefile.dep in 
+#			at the end of the file .dep in 
 #			your build directory.  Have a look...
 #
 #   (3) Type "make nachos"  (or just "make").
@@ -122,7 +122,7 @@
 #	made, do "make depend".
 #
 #     - IF you have added new files (.cc or .h) since the last build,
-#	you should edit this Makefile before running "make depend"
+#	you should edit this  before running "make depend"
 # 	and "make nachos".
 
 #	For new .h files, simply update the appropriate "_H" list below.
@@ -346,11 +346,11 @@ depend: $(CFILES) $(HFILES)
 	@echo '$$r makedep' >>eddep
 	@echo 'w' >>eddep
 	@echo 'q' >>eddep
-	ed - Makefile.dep < eddep
+	ed - .dep < eddep
 	rm eddep makedep 
-	@echo '# DEPENDENCIES MUST END AT END OF FILE' >> Makefile.dep
-	@echo '# IF YOU PUT STUFF HERE IT WILL GO AWAY' >> Makefile.dep
-	@echo '# see make depend above' >> Makefile.dep
+	@echo '# DEPENDENCIES MUST END AT END OF FILE' >> .dep
+	@echo '# IF YOU PUT STUFF HERE IT WILL GO AWAY' >> .dep
+	@echo '# see make depend above' >> .dep
 
 clean:
 	$(RM) -f $(OFILES)
@@ -363,10 +363,10 @@ distclean: clean
 	@echo '/^# DO NOT DELETE THIS LINE/+1,$$d' >eddep
 	@echo 'w' >>eddep
 	@echo 'q' >>eddep
-	ed - Makefile.dep < eddep
+	ed - .dep < eddep
 	rm eddep 
-	@echo '# DEPENDENCIES MUST END AT END OF FILE' >> Makefile.dep
-	@echo '# IF YOU PUT STUFF HERE IT WILL GO AWAY' >> Makefile.dep
-	@echo '# see make depend above' >> Makefile.dep
+	@echo '# DEPENDENCIES MUST END AT END OF FILE' >> .dep
+	@echo '# IF YOU PUT STUFF HERE IT WILL GO AWAY' >> .dep
+	@echo '# see make depend above' >> .dep
 
 include Makefile.dep

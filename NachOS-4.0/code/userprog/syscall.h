@@ -15,6 +15,8 @@
 
 #include "copyright.h"
 #include "errno.h"
+
+#include "synchconsole.h"
 /* system call codes -- used by the stubs to tell the kernel which system call
  * is being asked for
  */
@@ -23,7 +25,7 @@
 #define SC_Exec		2
 #define SC_Join		3
 #define SC_Create	4
-#define SC_Remove       5
+#define SC_Remove   5
 #define SC_Open		6
 #define SC_Read		7
 #define SC_Write	8
@@ -174,6 +176,7 @@ int ThreadJoin(ThreadId id);
  */
 void ThreadExit(int ExitCode);	
 
+const int MaxFileLength=32;
 #endif /* IN_ASM */
 
 #endif /* SYSCALL_H */

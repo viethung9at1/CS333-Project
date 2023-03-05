@@ -53,7 +53,14 @@ class OpenFile {
 		}
 
     int Length() { Lseek(file, 0, 2); return Tell(file); }
-    
+	int GetCurrentPos(){currentOffset=Tell(file); return currentOffset;}
+	void Seek(int position)
+	{
+    	Lseek(file, position, 0); 
+	}	
+
+	int t; //0: rw, 1: r, 2: stdin, 3: stdout
+	char* fName;
   private:
     int file;
     int currentOffset;
@@ -64,10 +71,10 @@ class FileHeader;
 
 class OpenFile {
   public:
+	int t; //0: rw, 1: r, 2: stdin, 3: stdout
     OpenFile(int sector);		// Open a file whose header is located
 					// at "sector" on the disk
     ~OpenFile();			// Close the file
-
     void Seek(int position); 		// Set the position from which to 
 					// start reading/writing -- UNIX lseek
 
