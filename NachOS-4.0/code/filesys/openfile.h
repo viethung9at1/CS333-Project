@@ -56,7 +56,7 @@ class OpenFile {
 	int GetCurrentPos(){currentOffset=Tell(file); return currentOffset;}
 	void Seek(int position)
 	{
-    	currentOffset = position;
+    	Lseek(file, position, 0); 
 	}	
 
 	int t; //0: rw, 1: r, 2: stdin, 3: stdout
