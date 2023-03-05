@@ -190,7 +190,8 @@ ExceptionHandler(ExceptionType which)
 				else // stdout
 					kernel->machine->WriteRegister(2, 1); 
 				delete[] filename;
-				break;
+				PCIncrease();
+				return;
 			}
 			kernel->machine->WriteRegister(2, -1); 
 			delete[] filename;
@@ -207,7 +208,8 @@ ExceptionHandler(ExceptionType which)
 					delete kernel->fileSystem->openingFile[fileID];
 					kernel->fileSystem->openingFile[fileID]=NULL;
 					kernel->machine->WriteRegister(2,0);
-					break;
+					PCIncrease();
+					return;
 				}
 			kernel->machine->WriteRegister(2,-1);
 			PCIncrease();
@@ -357,6 +359,29 @@ ExceptionHandler(ExceptionType which)
 				kernel->fileSystem->openingFile[id]->Seek(position);
 				kernel->machine->WriteRegister(2, position);
 			}
+			PCIncrease();
+			return;
+			break;
+		}
+		case SC_Remove:
+		{
+			int virtAdr=kernel->machine->ReadRegister(4);
+			char* filename;
+			filename=User2System(virtAdr, MaxFileLength+1);
+			for(int i=0;i<MaxFile;i++){
+				if(strcmp(kernel->fileSystem->openingFile[i]->fName, filename)==0){
+					cerr<<"Error, file opening";
+					kernel->machine->WriteRegister(2,-1);
+					delete filename;
+					PCIncrease();
+					return;
+				}
+			}
+			int ans=kernel->fileSystem->Remove(filename);
+			if(!ans)
+				kernel->machine->WriteRegister(2,-1);
+			else kernel->machine->WriteRegister(2,0);
+			delete filename;
 			PCIncrease();
 			return;
 			break;

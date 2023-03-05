@@ -369,4 +369,4 @@ distclean: clean
 	@echo '# IF YOU PUT STUFF HERE IT WILL GO AWAY' >> .dep
 	@echo '# see make depend above' >> .dep
 
-include .dep
+include Makefile.dep

@@ -76,7 +76,7 @@ class FileSystem {
 
 		if (fileDescriptor == -1) return NULL;
 		//index++;
-		return new OpenFile(fileDescriptor, type);
+		return new OpenFile(fileDescriptor, type, name);
 	}
 	int FindFreeSlot()
 	{
