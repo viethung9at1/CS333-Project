@@ -438,6 +438,12 @@ OpenSocket()
     return sockID;
 }
 
+int openSocketInternet(){
+    int sockID = socket(AF_INET, SOCK_STREAM, 0);
+    ASSERT(sockID >= 0);
+    return sockID;
+}
+
 //----------------------------------------------------------------------
 // CloseSocket
 // 	Close the IPC connection. 

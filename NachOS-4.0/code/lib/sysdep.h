@@ -71,5 +71,6 @@ extern void DeAssignNameToSocket(char *socketName);
 extern bool PollSocket(int sockID);
 extern void ReadFromSocket(int sockID, char *buffer, int packetSize);
 extern void SendToSocket(int sockID, char *buffer, int packetSize,char *toName);
+extern int openSocketInternet();
 
 #endif // SYSDEP_H

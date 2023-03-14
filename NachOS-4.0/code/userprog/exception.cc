@@ -25,6 +25,8 @@
 #include "main.h"
 #include "syscall.h"
 #include "ksyscall.h"
+const int MAXFileNameLength = 32;
+const int MAXIpAddressLength = 15;
 //----------------------------------------------------------------------
 // ExceptionHandler
 // 	Entry point into the Nachos kernel.  Called when a user program
@@ -90,6 +92,142 @@ int System2User(int virtAddr, int len, char* buffer)
 	} while (i < len && oneChar != 0);
 	return i;
 }
+
+void openSystemSocket(){
+	DEBUG('a', "\n SC_OpenSocket Calls......");
+	int socketID;
+	if(socketID == kernel -> fileSystem ->createTCP() == -1){
+		printf("\n Error create Socket....");
+		kernel -> machine ->WriteRegister(2, -1);
+		PCIncrease();
+		return;
+	}
+
+	printf("\n Successfully creating socket for system, socketID: %d", socketID);
+	kernel -> machine -> WriteRegister(2, socketID);
+	PCIncrease();
+}
+
+void connectSystemSocket(){
+	DEBUG('a', "\n SC_ConnectSocket Calls......");
+	int socketID, vAddress, port;
+	char *ip;
+	
+	DEBUG('a', "\n Reading SocketID");
+	socketID = kernel -> machine -> ReadRegister(4);
+
+	DEBUG('a', "\n Reading virtual address");
+	vAddress = kernel -> machine -> ReadRegister(5);
+
+	DEBUG('a', "\n Reading IP");
+	ip = User2System(vAddress, MAXIpAddressLength);
+
+	if(ip == nullptr){
+		kernel -> machine -> WriteRegister(2, -1);
+		delete ip;
+		PCIncrease();
+		return;
+	}
+
+	DEBUG('a', "\n Reading port");
+	port = kernel -> machine -> ReadRegister(6);
+
+	if(kernel -> fileSystem -> connectTCP(socketID, ip, port) == -1){
+		printf("\n Failed to connect to SocketId: %d, IP: %s, Port: %d", socketID, ip, port);
+    	kernel->machine->WriteRegister(2, -1);
+    	delete ip;
+    	PCIncrease();
+    	return;
+	}
+
+	printf("\n Sucessfully connect to SocketId: %d, IP: %s, Port: %d", socketID, ip, port);
+	kernel -> machine -> WriteRegister(2, 0);
+	delete ip;
+	PCIncrease();
+}
+
+void sendSystemSocket(){
+	int socketID, leng, vAddress, rVal;
+	char *buff;
+
+	DEBUG('a', "\n SC_Send calls....");
+	DEBUG('a', "\n Reading SocketID");
+	socketID = kernel -> machine -> ReadRegister(4);
+	
+	DEBUG('a', "\n Reading virtual address of buffer.....");
+	vAddress = kernel -> machine -> ReadRegister(5);
+
+	DEBUG('a', "\n Reading buffer");
+	buff = User2System(vAddress, leng);
+
+	if(buff == nullptr){
+		DEBUG('a', "\n Not enough memory for our system");
+		kernel -> machine -> WriteRegister(2, -1);
+		delete buff;
+		PCIncrease();
+		return;
+	}
+
+	  DEBUG('a', "\n Finish reading buffer.");
+
+  	DEBUG('a', "\n Reading length");
+  	leng = kernel->machine->ReadRegister(6);
+
+	rVal = kernel -> fileSystem -> sendTCP(socketID, buff, leng);
+
+	if(rVal == -1) printf("\n Failed to send data");
+	else if(rVal == 0) printf("\n Connection closed");
+	else printf("Successfully sent %d bytes of data", rVal);
+
+	kernel -> machine -> WriteRegister(2, rVal);
+	delete buff;
+	PCIncrease();
+}
+
+
+void receiveSystemSocket(){
+	int socketID, leng, vAddress, rVal;
+	char * buff;
+	DEBUG('a', "\n SC_Receive call....");
+	DEBUG('a', "\n Reading Socket ID");
+	socketID = kernel -> machine -> ReadRegister(4);
+
+	DEBUG('a', "\n Reading virtual address");
+	vAddress = kernel -> machine -> ReadRegister(5);
+
+	DEBUG('a', "\n Reading length");
+  	leng = kernel->machine->ReadRegister(6);
+
+	buff = new char[leng];
+
+	rVal = kernel -> fileSystem ->receiveTCP(socketID, buff, leng);
+
+	if(rVal == -1)
+
+	if(rVal == -1) printf("\n Failed to send data");
+	else if(rVal == 0) printf("\n Connection closed");
+	else {
+		printf("Successfully recieve %d bytes of data", rVal);
+		rVal = System2User(vAddress, rVal, buff);
+	}
+
+	kernel -> machine -> WriteRegister(2, rVal);
+  	delete buff;
+  	PCIncrease();
+}
+
+void systemCloseSocket(){
+	int socketID, rVal;
+	DEBUG('a', "\n SC_CloseSocket calls ...");
+	DEBUG('a', "\n Reading Socket ID");
+	socketID = kernel -> machine -> ReadRegister(4);
+
+	rVal = kernel -> fileSystem -> closeTCP(socketID);
+
+	kernel -> machine -> WriteRegister(2, rVal);
+	PCIncrease();
+}
+
 void
 ExceptionHandler(ExceptionType which)
 {
@@ -237,7 +375,7 @@ ExceptionHandler(ExceptionType which)
 				return;
 			}
 			if(kernel->fileSystem->openingFile[id]->t==3){
-				cerr<"Cannot print stdout\n";
+				cerr<<"Cannot print stdout\n";
 				kernel->machine->WriteRegister(2,-1);
 				PCIncrease();
 				return;
@@ -387,6 +525,42 @@ ExceptionHandler(ExceptionType which)
 			break;
 			ASSERTNOTREACHED();
 		}
+
+		case SC_SocketTCP_Open:{
+			openSystemSocket();
+			return;
+			ASSERTNOTREACHED();
+			break;
+		}
+
+		case SC_SocketTCP_Connect:{
+			connectSystemSocket();
+			return;
+			ASSERTNOTREACHED();
+			break;
+		}
+
+		case SC_SocketTCP_Send:{
+			sendSystemSocket();
+			return;
+			ASSERTNOTREACHED();
+			break;
+		}
+
+		case SC_SocketTCP_Receive:{
+			receiveSystemSocket();
+			return;
+			ASSERTNOTREACHED();
+			break;
+		}
+
+		case SC_SocketTCP_Close:{
+			systemCloseSocket();
+			return;
+			ASSERTNOTREACHED();
+			break;
+		}
+
       default:
 	cerr << "Unexpected system call " << type << "\n";
 	break;

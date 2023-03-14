@@ -23,7 +23,7 @@
 #include "copyright.h"
 #include "utility.h"
 #include "sysdep.h"
-
+#define FILESYS_STUB
 #ifdef FILESYS_STUB			// Temporarily implement calls to 
 					// Nachos file system as calls to UNIX!
 					// See definitions listed under #else
