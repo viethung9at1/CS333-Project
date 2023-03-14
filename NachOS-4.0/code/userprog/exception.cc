@@ -99,13 +99,13 @@ void openSystemSocket(){
 	if(socketID == kernel -> fileSystem ->createTCP() == -1){
 		printf("\n Error create Socket....");
 		kernel -> machine ->WriteRegister(2, -1);
-		incrementPC();
+		PCIncrease();
 		return;
 	}
 
 	printf("\n Successfully creating socket for system, socketID: %d", socketID);
 	kernel -> machine -> WriteRegister(2, socketID);
-	incrementPC();
+	PCIncrease();
 }
 
 void connectSystemSocket(){
@@ -125,7 +125,7 @@ void connectSystemSocket(){
 	if(ip == nullptr){
 		kernel -> machine -> WriteRegister(2, -1);
 		delete ip;
-		incrementPC();
+		PCIncrease();
 		return;
 	}
 
@@ -133,17 +133,17 @@ void connectSystemSocket(){
 	port = kernel -> machine -> ReadRegister(6);
 
 	if(kernel -> fileSystem -> connectTCP(socketID, ip, port) == -1){
-		printf("\n Failed to connect to SocketId: %d, IP: %s, Port: %d", SocketID, ip, port);
+		printf("\n Failed to connect to SocketId: %d, IP: %s, Port: %d", socketID, ip, port);
     	kernel->machine->WriteRegister(2, -1);
     	delete ip;
-    	incrementPC();
+    	PCIncrease();
     	return;
 	}
 
-	printf("\n Sucessfully connect to SocketId: %d, IP: %s, Port: %d", SocketID, ip, port);
+	printf("\n Sucessfully connect to SocketId: %d, IP: %s, Port: %d", socketID, ip, port);
 	kernel -> machine -> WriteRegister(2, 0);
 	delete ip;
-	incrementPC();
+	PCIncrease();
 }
 
 void sendSystemSocket(){
@@ -164,7 +164,7 @@ void sendSystemSocket(){
 		DEBUG('a', "\n Not enough memory for our system");
 		kernel -> machine -> WriteRegister(2, -1);
 		delete buff;
-		incrementPC();
+		PCIncrease();
 		return;
 	}
 
@@ -173,7 +173,7 @@ void sendSystemSocket(){
   	DEBUG('a', "\n Reading length");
   	leng = kernel->machine->ReadRegister(6);
 
-	rVal = kernel -> fileSystem -> sendTCP(socketID, buffer, leng);
+	rVal = kernel -> fileSystem -> sendTCP(socketID, buff, leng);
 
 	if(rVal == -1) printf("\n Failed to send data");
 	else if(rVal == 0) printf("\n Connection closed");
@@ -181,7 +181,7 @@ void sendSystemSocket(){
 
 	kernel -> machine -> WriteRegister(2, rVal);
 	delete buff;
-	increasePC();
+	PCIncrease();
 }
 
 
@@ -200,7 +200,7 @@ void receiveSystemSocket(){
 
 	buff = new char[leng];
 
-	rVal = kernel -> fileSystem ->receiveTCP(socketid, buffer, leng);
+	rVal = kernel -> fileSystem ->receiveTCP(socketID, buff, leng);
 
 	if(rVal == -1)
 
@@ -213,9 +213,20 @@ void receiveSystemSocket(){
 
 	kernel -> machine -> WriteRegister(2, rVal);
   	delete buff;
-  	incrementPC();
+  	PCIncrease();
 }
 
+void systemCloseSocket(){
+	int socketID, rVal;
+	DEBUG('a', "\n SC_CloseSocket calls ...");
+	DEBUG('a', "\n Reading Socket ID");
+	socketID = kernel -> machine -> ReadRegister(4);
+
+	rVal = kernel -> fileSystem -> closeTCP(socketID);
+
+	kernel -> machine -> WriteRegister(2, rVal);
+	PCIncrease();
+}
 
 void
 ExceptionHandler(ExceptionType which)
@@ -516,26 +527,39 @@ ExceptionHandler(ExceptionType which)
 		}
 
 		case SC_SocketTCP_Open:{
-
+			openSystemSocket();
+			return;
+			ASSERTNOTREACHED();
+			break;
 		}
 
 		case SC_SocketTCP_Connect:{
-
+			connectSystemSocket();
+			return;
+			ASSERTNOTREACHED();
+			break;
 		}
 
 		case SC_SocketTCP_Send:{
-
+			sendSystemSocket();
+			return;
+			ASSERTNOTREACHED();
+			break;
 		}
 
 		case SC_SocketTCP_Receive:{
-
+			receiveSystemSocket();
+			return;
+			ASSERTNOTREACHED();
+			break;
 		}
 
 		case SC_SocketTCP_Close:{
-
+			systemCloseSocket();
+			return;
+			ASSERTNOTREACHED();
+			break;
 		}
-
-
 
       default:
 	cerr << "Unexpected system call " << type << "\n";
