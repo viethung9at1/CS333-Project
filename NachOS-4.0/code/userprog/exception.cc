@@ -146,10 +146,75 @@ void connectSystemSocket(){
 	incrementPC();
 }
 
+void sendSystemSocket(){
+	int socketID, leng, vAddress, rVal;
+	char *buff;
+
+	DEBUG('a', "\n SC_Send calls....");
+	DEBUG('a', "\n Reading SocketID");
+	socketID = kernel -> machine -> ReadRegister(4);
+	
+	DEBUG('a', "\n Reading virtual address of buffer.....");
+	vAddress = kernel -> machine -> ReadRegister(5);
+
+	DEBUG('a', "\n Reading buffer");
+	buff = User2System(vAddress, leng);
+
+	if(buff == nullptr){
+		DEBUG('a', "\n Not enough memory for our system");
+		kernel -> machine -> WriteRegister(2, -1);
+		delete buff;
+		incrementPC();
+		return;
+	}
+
+	  DEBUG('a', "\n Finish reading buffer.");
+
+  	DEBUG('a', "\n Reading length");
+  	leng = kernel->machine->ReadRegister(6);
+
+	rVal = kernel -> fileSystem -> sendTCP(socketID, buffer, leng);
+
+	if(rVal == -1) printf("\n Failed to send data");
+	else if(rVal == 0) printf("\n Connection closed");
+	else printf("Successfully sent %d bytes of data", rVal);
+
+	kernel -> machine -> WriteRegister(2, rVal);
+	delete buff;
+	increasePC();
+}
 
 
+void receiveSystemSocket(){
+	int socketID, leng, vAddress, rVal;
+	char * buff;
+	DEBUG('a', "\n SC_Receive call....");
+	DEBUG('a', "\n Reading Socket ID");
+	socketID = kernel -> machine -> ReadRegister(4);
 
+	DEBUG('a', "\n Reading virtual address");
+	vAddress = kernel -> machine -> ReadRegister(5);
 
+	DEBUG('a', "\n Reading length");
+  	leng = kernel->machine->ReadRegister(6);
+
+	buff = new char[leng];
+
+	rVal = kernel -> fileSystem ->receiveTCP(socketid, buffer, leng);
+
+	if(rVal == -1)
+
+	if(rVal == -1) printf("\n Failed to send data");
+	else if(rVal == 0) printf("\n Connection closed");
+	else {
+		printf("Successfully recieve %d bytes of data", rVal);
+		rVal = System2User(vAddress, rVal, buff);
+	}
+
+	kernel -> machine -> WriteRegister(2, rVal);
+  	delete buff;
+  	incrementPC();
+}
 
 
 void
