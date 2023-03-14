@@ -237,7 +237,7 @@ ExceptionHandler(ExceptionType which)
 				return;
 			}
 			if(kernel->fileSystem->openingFile[id]->t==3){
-				cerr<"Cannot print stdout\n";
+				cerr<<"Cannot print stdout\n";
 				kernel->machine->WriteRegister(2,-1);
 				PCIncrease();
 				return;
@@ -387,6 +387,29 @@ ExceptionHandler(ExceptionType which)
 			break;
 			ASSERTNOTREACHED();
 		}
+
+		case SC_SocketTCP_Open:{
+
+		}
+
+		case SC_SocketTCP_Connect:{
+
+		}
+
+		case SC_SocketTCP_Send:{
+
+		}
+
+		case SC_SocketTCP_Receive:{
+
+		}
+
+		case SC_SocketTCP_Close:{
+			
+		}
+
+
+
       default:
 	cerr << "Unexpected system call " << type << "\n";
 	break;

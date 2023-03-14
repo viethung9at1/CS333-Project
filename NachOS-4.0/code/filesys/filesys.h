@@ -37,19 +37,33 @@
 #include "sysdep.h"
 #include "openfile.h"
 const int MaxFile=20;
+const int reverseFD = 2;
 #ifdef FILESYS_STUB 		// Temporarily implement file system calls as 
 				// calls to UNIX, until the real file system
 				// implementation is available
 class FileSystem {
+	struct openFileSocket{
+		int fd;
+		openFileSocket(int fd1){
+			fd = fd1;
+		}
+		~openFileSocket(){
+			CloseSocket(fd);
+		}
+	};
   public:
 	int index=0;
 	OpenFile** openingFile;
+	openFileSocket* fileSocket[MaxFile];
+
+
     FileSystem(){
 		openingFile=new OpenFile*[MaxFile];
 		index=0;
 		for(int i=0;i<MaxFile;i++) openingFile[i]=NULL;
 		this->Create("stdin");
 		this->Create("stdout");
+		memset(fileSocket, 0, sizeof(fileSocket));
 		openingFile[index++]=this->Open("stdin",2);
 		openingFile[index++]= this->Open("stdout",3);
 	}
@@ -80,13 +94,57 @@ class FileSystem {
 	}
 	int FindFreeSlot()
 	{
-		for(int i = 2; i < 10; i++)
+		for(int i = 2; i < 20; i++)
 		{
 			if(openingFile[i] == NULL) return i;		
 		}
 		return -1;
 	}
     bool Remove(char *name) { return Unlink(name) == 0; }
+
+	// Part 2: Socket programming
+
+	int checkSlotSocket(){
+		for(int i = reverseFD; i < MaxFile; i++){
+			if(fileSocket[i] == nullptr) return i;
+		}
+		return -1;
+	}
+
+	int createTCP(){
+		int a = checkSlotSocket();
+		if(a == -1) return -1;
+		int b = openSocketInternet();
+		if(b < - 1) return - 1;
+		fileSocket[a] = new openFileSocket(b);
+		return a;
+	}
+
+	int connectTCP(int socketid, char *ip, int port){
+		if(socketid < reverseFD || socketid >= MaxFile) return -1;
+		if(fileSocket[socketid] == nullptr) return -1;
+		return connectTCP(fileSocket[socketid] -> fd, ip, port);
+	}
+
+	int sendTCP(int socketid, char *buffer, int port){
+		if(socketid < reverseFD || socketid >= MaxFile) return -1;
+		if(fileSocket[socketid] == nullptr) return 0;
+		return sendTCP(fileSocket[socketid] -> fd, buffer, port);
+	}
+
+	int receiveTCP(int socketid, char *buffer, int port){
+		if(socketid < reverseFD || socketid >= MaxFile) return -1;
+		if(fileSocket[socketid] == nullptr) return 0;
+		return receiveTCP(fileSocket[socketid] -> fd, buffer, port);
+	}
+
+	int closeTCP(int socketid){
+		if(socketid < reverseFD || socketid >= MaxFile) return -1;
+		if(fileSocket[socketid] == nullptr) return -1;
+		delete fileSocket[socketid];
+		fileSocket[socketid] == nullptr;
+		return 0;
+	}
 
 };
 

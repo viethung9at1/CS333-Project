@@ -36,6 +36,11 @@
 #define SC_ExecV	13
 #define SC_ThreadExit   14
 #define SC_ThreadJoin   15
+#define SC_SocketTCP_Open 16
+#define SC_SocketTCP_Connect 17
+#define SC_SocketTCP_Send 18
+#define SC_SocketTCP_Receive 19
+#define SC_SocketTCP_Close 20
 
 #define SC_Add		42
 
@@ -175,6 +180,8 @@ int ThreadJoin(ThreadId id);
  * Deletes current thread and returns ExitCode to every waiting lokal thread.
  */
 void ThreadExit(int ExitCode);	
+
+int SocketTCP();
 
 const int MaxFileLength=32;
 #endif /* IN_ASM */
