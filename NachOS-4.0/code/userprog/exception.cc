@@ -25,6 +25,8 @@
 #include "main.h"
 #include "syscall.h"
 #include "ksyscall.h"
+const int MAXFileNameLength = 32;
+const int MAXIpAddressLength = 15;
 //----------------------------------------------------------------------
 // ExceptionHandler
 // 	Entry point into the Nachos kernel.  Called when a user program
@@ -90,6 +92,66 @@ int System2User(int virtAddr, int len, char* buffer)
 	} while (i < len && oneChar != 0);
 	return i;
 }
+
+void openSystemSocket(){
+	DEBUG('a', "\n SC_OpenSocket Calls......");
+	int socketID;
+	if(socketID == kernel -> fileSystem ->createTCP() == -1){
+		printf("\n Error create Socket....");
+		kernel -> machine ->WriteRegister(2, -1);
+		incrementPC();
+		return;
+	}
+
+	printf("\n Successfully creating socket for system, socketID: %d", socketID);
+	kernel -> machine -> WriteRegister(2, socketID);
+	incrementPC();
+}
+
+void connectSystemSocket(){
+	DEBUG('a', "\n SC_ConnectSocket Calls......");
+	int socketID, vAddress, port;
+	char *ip;
+	
+	DEBUG('a', "\n Reading SocketID");
+	socketID = kernel -> machine -> ReadRegister(4);
+
+	DEBUG('a', "\n Reading virtual address");
+	vAddress = kernel -> machine -> ReadRegister(5);
+
+	DEBUG('a', "\n Reading IP");
+	ip = User2System(vAddress, MAXIpAddressLength);
+
+	if(ip == nullptr){
+		kernel -> machine -> WriteRegister(2, -1);
+		delete ip;
+		incrementPC();
+		return;
+	}
+
+	DEBUG('a', "\n Reading port");
+	port = kernel -> machine -> ReadRegister(6);
+
+	if(kernel -> fileSystem -> connectTCP(socketID, ip, port) == -1){
+		printf("\n Failed to connect to SocketId: %d, IP: %s, Port: %d", SocketID, ip, port);
+    	kernel->machine->WriteRegister(2, -1);
+    	delete ip;
+    	incrementPC();
+    	return;
+	}
+
+	printf("\n Sucessfully connect to SocketId: %d, IP: %s, Port: %d", SocketID, ip, port);
+	kernel -> machine -> WriteRegister(2, 0);
+	delete ip;
+	incrementPC();
+}
+
+
+
+
+
+
+
 void
 ExceptionHandler(ExceptionType which)
 {
@@ -405,7 +467,7 @@ ExceptionHandler(ExceptionType which)
 		}
 
 		case SC_SocketTCP_Close:{
-			
+
 		}
 
 
