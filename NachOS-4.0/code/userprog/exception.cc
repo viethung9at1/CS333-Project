@@ -531,49 +531,49 @@ ExceptionHandler(ExceptionType which)
 		return handle_SC_Seek();
 	case SC_Remove:
 		return handle_SC_Remove();
-
-		case SC_SocketTCP_Open:{
-			openSystemSocket();
-			return;
-			ASSERTNOTREACHED();
-			break;
-		}
-
-		case SC_SocketTCP_Connect:{
-			connectSystemSocket();
-			return;
-			ASSERTNOTREACHED();
-			break;
-		}
-
-		case SC_SocketTCP_Send:{
-			sendSystemSocket();
-			return;
-			ASSERTNOTREACHED();
-			break;
-		}
-
-		case SC_SocketTCP_Receive:{
-			receiveSystemSocket();
-			return;
-			ASSERTNOTREACHED();
-			break;
-		}
-
-		case SC_SocketTCP_Close:{
-			systemCloseSocket();
-			return;
-			ASSERTNOTREACHED();
-			break;
-		}
-
-      default:
-	cerr << "Unexpected system call " << type << "\n";
-	break;
+	// SOCKET
+	case SC_SocketTCP_Open:{
+		openSystemSocket();
+		return;
+		ASSERTNOTREACHED();
+		break;
 	}
+
+	case SC_SocketTCP_Connect:{
+		connectSystemSocket();
+		return;
+		ASSERTNOTREACHED();
+		break;
+	}
+
+	case SC_SocketTCP_Send:{
+		sendSystemSocket();
+		return;
+		ASSERTNOTREACHED();
+		break;
+	}
+
+	case SC_SocketTCP_Receive:{
+		receiveSystemSocket();
+		return;
+		ASSERTNOTREACHED();
+		break;
+	}
+
+	case SC_SocketTCP_Close:{
+		systemCloseSocket();
+		return;
+		ASSERTNOTREACHED();
+		break;
+	}
+
     default:
-      cerr << "Unexpected user mode exception: " << (int)which << "\n";
-      break;
-    }
-    ASSERTNOTREACHED();
+		cerr << "Unexpected system call " << type << "\n";
+		break;
+		}
+		default:
+		cerr << "Unexpected user mode exception: " << (int)which << "\n";
+		break;
+		}
+		ASSERTNOTREACHED();
 }

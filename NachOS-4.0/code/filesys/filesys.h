@@ -72,7 +72,7 @@ public:
 	}
 	~FileSystem()
 	{
-		for (int i = 0; i < 10; i++)
+		for (int i = 0; i < MaxFile; i++)
 			if (openingFile[i] != NULL)
 				delete openingFile[i];
 		delete[] openingFile;
@@ -104,7 +104,7 @@ public:
 	}
 	int FindFreeSlot()
 	{
-		for (int i = 2; i < 20; i++)
+		for (int i = 2; i < MaxFile; i++)
 		{
 			if (openingFile[i] == NULL)
 				return i;
