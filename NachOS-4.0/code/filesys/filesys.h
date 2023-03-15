@@ -36,8 +36,7 @@
 #include "copyright.h"
 #include "sysdep.h"
 #include "openfile.h"
-const int MaxFile = 20;
-const int reverseFD = 2;
+#define MaxFile 20
 #ifdef FILESYS_STUB // Temporarily implement file system calls as
 // calls to UNIX, until the real file system
 // implementation is available
@@ -63,15 +62,13 @@ public:
 
 	FileSystem()
 	{
-		openingFile = new OpenFile *[MaxFile];
-		index = 0;
-		for (int i = 0; i < MaxFile; i++)
-			openingFile[i] = NULL;
+		openingFile=new OpenFile*[MaxFile];
+		for(int i=0;i<MaxFile;i++) openingFile[i]=NULL;
 		this->Create("stdin");
 		this->Create("stdout");
-		memset(fileSocket, 0, sizeof(fileSocket));
-		openingFile[index++] = this->Open("stdin", 2);
-		openingFile[index++] = this->Open("stdout", 3);
+		openingFile[0]=this->Open("stdin",2);
+		openingFile[1]= this->Open("stdout",3);
+	}
 	}
 	~FileSystem()
 	{
@@ -83,7 +80,7 @@ public:
 	bool Create(char *name)
 	{
 		int fileDescriptor = OpenForWrite(name);
-		OpenFile *Open(char *name, int type);
+//		OpenFile *Open(char *name, int type);
 		if (fileDescriptor == -1)
 			return FALSE;
 		Close(fileDescriptor);
@@ -101,9 +98,8 @@ public:
 	{
 		int fileDescriptor = OpenForReadWrite(name, FALSE);
 
-		if (fileDescriptor == -1)
-			return NULL;
-		// index++;
+		if (fileDescriptor == -1) return NULL;
+		//index++;
 		return new OpenFile(fileDescriptor, type, name);
 	}
 	int FindFreeSlot()

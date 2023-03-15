@@ -43,6 +43,8 @@
 #define SC_SocketTCP_Close 20
 
 #define SC_Add		42
+#define MaxFileLength   32
+#define MaxFile 20
 
 #ifndef IN_ASM
 
