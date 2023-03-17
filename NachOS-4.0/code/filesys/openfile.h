@@ -29,9 +29,17 @@
 					// See definitions listed under #else
 class OpenFile {
   public:
-    OpenFile(int f) { file = f; currentOffset = 0; }	// open the file
+    OpenFile(int f) { 
+		file = f; 
+		currentOffset = 0; 
+	}	// open the file
     ~OpenFile() { Close(file); }			// close the file
-	OpenFile(int f, int type, char* name){file=f; currentOffset=0; t=type;fName=name;}
+	OpenFile(int f, int type, char* name){
+		file=f; 
+		currentOffset=0; 
+		t=type;
+		fName=name;
+	}
     int ReadAt(char *into, int numBytes, int position) { 
     		Lseek(file, position, 0); 
 		return ReadPartial(file, into, numBytes); 
