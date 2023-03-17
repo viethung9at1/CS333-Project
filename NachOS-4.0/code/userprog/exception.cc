@@ -191,7 +191,7 @@ void handle_SC_Open(){
 
 void handle_SC_Close(){
 	int fileID=kernel->machine->ReadRegister(4);
-	if(fileID>=0&&fileID<MaxFile)
+	if(fileID>=0&&fileID<=MaxFile)
 		if(kernel->fileSystem->openingFile[fileID]){
 			delete kernel->fileSystem->openingFile[fileID];
 			kernel->fileSystem->openingFile[fileID]=NULL;
@@ -209,7 +209,7 @@ void handle_SC_Read(){
 	int id=kernel->machine->ReadRegister(6);
 	int oldPosition, newPosition;
 	char* buf;
-	if(id<0||id>=MaxFile) {
+	if(id<0||id>MaxFile) {
 		//cerr<<"Read failed\n";
 		kernel->machine->WriteRegister(2,-1);
 		return PCIncrease();
@@ -259,7 +259,7 @@ void handle_SC_Write(){
 	int oldPosition;
 	int newPosition;
 	char *buf;
-	if(id<0||id>=MaxFile){
+	if(id<0||id>MaxFile){
 		//cerr<<"Outside file table\n";
 		kernel->machine->WriteRegister(2,-1);
 		return PCIncrease();
@@ -304,7 +304,7 @@ void handle_SC_Write(){
 void handle_SC_Seek(){
 	int position=kernel->machine->ReadRegister(4);
 	int id=kernel->machine->ReadRegister(5);
-	if(id<0||id>=MaxFile) {
+	if(id<0||id>MaxFile) {
 		//cerr<<"Outside file table\n";
 		kernel->machine->WriteRegister(2,-1);
 		
@@ -531,49 +531,49 @@ ExceptionHandler(ExceptionType which)
 		return handle_SC_Seek();
 	case SC_Remove:
 		return handle_SC_Remove();
-	// SOCKET
-	case SC_SocketTCP_Open:{
-		openSystemSocket();
-		return;
-		ASSERTNOTREACHED();
-		break;
-	}
 
-	case SC_SocketTCP_Connect:{
-		connectSystemSocket();
-		return;
-		ASSERTNOTREACHED();
-		break;
-	}
+		case SC_SocketTCP_Open:{
+			openSystemSocket();
+			return;
+			ASSERTNOTREACHED();
+			break;
+		}
 
-	case SC_SocketTCP_Send:{
-		sendSystemSocket();
-		return;
-		ASSERTNOTREACHED();
-		break;
-	}
+		case SC_SocketTCP_Connect:{
+			connectSystemSocket();
+			return;
+			ASSERTNOTREACHED();
+			break;
+		}
 
-	case SC_SocketTCP_Receive:{
-		receiveSystemSocket();
-		return;
-		ASSERTNOTREACHED();
-		break;
-	}
+		case SC_SocketTCP_Send:{
+			sendSystemSocket();
+			return;
+			ASSERTNOTREACHED();
+			break;
+		}
 
-	case SC_SocketTCP_Close:{
-		systemCloseSocket();
-		return;
-		ASSERTNOTREACHED();
-		break;
-	}
+		case SC_SocketTCP_Receive:{
+			receiveSystemSocket();
+			return;
+			ASSERTNOTREACHED();
+			break;
+		}
 
+		case SC_SocketTCP_Close:{
+			systemCloseSocket();
+			return;
+			ASSERTNOTREACHED();
+			break;
+		}
+
+      default:
+	cerr << "Unexpected system call " << type << "\n";
+	break;
+	}
     default:
-		cerr << "Unexpected system call " << type << "\n";
-		break;
-		}
-		default:
-		cerr << "Unexpected user mode exception: " << (int)which << "\n";
-		break;
-		}
-		ASSERTNOTREACHED();
+      cerr << "Unexpected user mode exception: " << (int)which << "\n";
+      break;
+    }
+    ASSERTNOTREACHED();
 }

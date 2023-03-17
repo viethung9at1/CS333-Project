@@ -42,9 +42,9 @@
 #define SC_SocketTCP_Receive 19
 #define SC_SocketTCP_Close 20
 
-#define SC_Add	    42
+#define SC_Add		42
 #define MaxFileLength   32
-#define MaxFile     20
+#define MaxFile 20
 
 #ifndef IN_ASM
 
@@ -185,7 +185,7 @@ void ThreadExit(int ExitCode);
 
 int SocketTCP();
 
-
+const int MaxFileLength=32;
 #endif /* IN_ASM */
 
 #endif /* SYSCALL_H */
