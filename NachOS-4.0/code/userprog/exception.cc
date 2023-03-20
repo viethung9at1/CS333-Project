@@ -391,7 +391,7 @@ void connectSystemSocket(){
 	DEBUG('a', "\n Reading IP");
 	ip = User2System(vAddress, MAXIpAddressLength);
 
-	if(ip == nullptr){
+	if(ip == NULL){
 		kernel -> machine -> WriteRegister(2, -1);
 		delete ip;
 		PCIncrease();
@@ -429,7 +429,7 @@ void sendSystemSocket(){
 	DEBUG('a', "\n Reading buffer");
 	buff = User2System(vAddress, leng);
 
-	if(buff == nullptr){
+	if(buff == NULL){
 		DEBUG('a', "\n Not enough memory for our system");
 		kernel -> machine -> WriteRegister(2, -1);
 		delete buff;

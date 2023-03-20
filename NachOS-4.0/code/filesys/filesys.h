@@ -37,6 +37,7 @@
 #include "sysdep.h"
 #include "openfile.h"
 #define MaxFile 20
+#define reverseFD 2 
 #ifdef FILESYS_STUB // Temporarily implement file system calls as
 // calls to UNIX, until the real file system
 // implementation is available
@@ -58,17 +59,17 @@ class FileSystem
 public:
 	int index = 0;
 	OpenFile **openingFile;
-	openFileSocket *fileSocket[MaxFile];
+	openFileSocket **fileSocket;
 
 	FileSystem()
 	{
 		openingFile=new OpenFile*[MaxFile];
+		fileSocket=new openFileSocket*[MaxFile];
 		for(int i=0;i<MaxFile;i++) openingFile[i]=NULL;
 		this->Create("stdin");
 		this->Create("stdout");
 		openingFile[0]=this->Open("stdin",2);
 		openingFile[1]= this->Open("stdout",3);
-	}
 	}
 	~FileSystem()
 	{
@@ -119,7 +120,7 @@ public:
 	{
 		for (int i = reverseFD; i < MaxFile; i++)
 		{
-			if (fileSocket[i] == nullptr)
+			if (fileSocket[i] == NULL)
 				return i;
 		}
 		return -1;
@@ -141,7 +142,7 @@ public:
 	{
 		if (socketid < reverseFD || socketid >= MaxFile)
 			return -1;
-		if (fileSocket[socketid] == nullptr)
+		if (fileSocket[socketid] == NULL)
 			return -1;
 		return connectTCP(fileSocket[socketid]->fd, ip, port);
 	}
@@ -150,7 +151,7 @@ public:
 	{
 		if (socketid < reverseFD || socketid >= MaxFile)
 			return -1;
-		if (fileSocket[socketid] == nullptr)
+		if (fileSocket[socketid] == NULL)
 			return 0;
 		return sendTCP(fileSocket[socketid]->fd, buffer, port);
 	}
@@ -159,7 +160,7 @@ public:
 	{
 		if (socketid < reverseFD || socketid >= MaxFile)
 			return -1;
-		if (fileSocket[socketid] == nullptr)
+		if (fileSocket[socketid] == NULL)
 			return 0;
 		return receiveTCP(fileSocket[socketid]->fd, buffer, port);
 	}
@@ -168,10 +169,10 @@ public:
 	{
 		if (socketid < reverseFD || socketid >= MaxFile)
 			return -1;
-		if (fileSocket[socketid] == nullptr)
+		if (fileSocket[socketid] == NULL)
 			return -1;
 		delete fileSocket[socketid];
-		fileSocket[socketid] == nullptr;
+		fileSocket[socketid] == NULL;
 		return 0;
 	}
 };
