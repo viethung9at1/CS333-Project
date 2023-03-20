@@ -2556,8 +2556,7 @@ addrspace.o: ../userprog/addrspace.cc /usr/include/stdc-predef.h \
  ../machine/callback.h ../machine/stats.h ../threads/alarm.h \
  ../machine/timer.h ../userprog/noff.h
 exception.o: ../userprog/exception.cc /usr/include/stdc-predef.h \
- ../lib/copyright.h ../threads/main.h ../lib/debug.h ../lib/utility.h \
- ../lib/sysdep.h /usr/include/c++/4.8/iostream \
+ ../lib/sysdep.h ../lib/copyright.h /usr/include/c++/4.8/iostream \
  /usr/include/x86_64-linux-gnu/c++/4.8/bits/c++config.h \
  /usr/include/x86_64-linux-gnu/c++/4.8/bits/os_defines.h \
  /usr/include/features.h /usr/include/x86_64-linux-gnu/sys/cdefs.h \
@@ -2669,13 +2668,14 @@ exception.o: ../userprog/exception.cc /usr/include/stdc-predef.h \
  /usr/include/x86_64-linux-gnu/bits/_G_config.h \
  /usr/include/x86_64-linux-gnu/bits/stdio_lim.h \
  /usr/include/x86_64-linux-gnu/bits/sys_errlist.h /usr/include/string.h \
- /usr/include/strings.h ../threads/kernel.h ../threads/thread.h \
- ../machine/machine.h ../machine/translate.h ../userprog/addrspace.h \
- ../filesys/filesys.h ../filesys/openfile.h ../threads/scheduler.h \
- ../lib/list.h ../lib/list.cc ../machine/interrupt.h \
- ../machine/callback.h ../machine/stats.h ../threads/alarm.h \
- ../machine/timer.h ../userprog/syscall.h ../userprog/errno.h \
- ../userprog/ksyscall.h
+ /usr/include/strings.h ../threads/main.h ../lib/debug.h ../lib/utility.h \
+ ../threads/kernel.h ../threads/thread.h ../machine/machine.h \
+ ../machine/translate.h ../userprog/addrspace.h ../filesys/filesys.h \
+ ../filesys/openfile.h ../threads/scheduler.h ../lib/list.h \
+ ../lib/list.cc ../machine/interrupt.h ../machine/callback.h \
+ ../machine/stats.h ../threads/alarm.h ../machine/timer.h \
+ ../userprog/syscall.h ../userprog/errno.h ../userprog/synchconsole.h \
+ ../machine/console.h ../threads/synch.h ../userprog/ksyscall.h
 synchconsole.o: ../userprog/synchconsole.cc /usr/include/stdc-predef.h \
  ../lib/copyright.h ../userprog/synchconsole.h ../lib/utility.h \
  ../machine/callback.h ../machine/console.h ../threads/synch.h \

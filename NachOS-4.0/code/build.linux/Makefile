@@ -346,11 +346,11 @@ depend: $(CFILES) $(HFILES)
 	@echo '$$r makedep' >>eddep
 	@echo 'w' >>eddep
 	@echo 'q' >>eddep
-	ed - .dep < eddep
+	ed - Makefile.dep < eddep
 	rm eddep makedep 
-	@echo '# DEPENDENCIES MUST END AT END OF FILE' >> .dep
-	@echo '# IF YOU PUT STUFF HERE IT WILL GO AWAY' >> .dep
-	@echo '# see make depend above' >> .dep
+	@echo '# DEPENDENCIES MUST END AT END OF FILE' >> Makefile.dep
+	@echo '# IF YOU PUT STUFF HERE IT WILL GO AWAY' >> Makefile.dep
+	@echo '# see make depend above' >> Makefile.dep
 
 clean:
 	$(RM) -f $(OFILES)
@@ -363,10 +363,10 @@ distclean: clean
 	@echo '/^# DO NOT DELETE THIS LINE/+1,$$d' >eddep
 	@echo 'w' >>eddep
 	@echo 'q' >>eddep
-	ed - .dep < eddep
+	ed - Makefile.dep < eddep
 	rm eddep 
-	@echo '# DEPENDENCIES MUST END AT END OF FILE' >> .dep
-	@echo '# IF YOU PUT STUFF HERE IT WILL GO AWAY' >> .dep
-	@echo '# see make depend above' >> .dep
+	@echo '# DEPENDENCIES MUST END AT END OF FILE' >> Makefile.dep
+	@echo '# IF YOU PUT STUFF HERE IT WILL GO AWAY' >> Makefile.dep
+	@echo '# see make depend above' >> Makefile.dep
 
 include Makefile.dep

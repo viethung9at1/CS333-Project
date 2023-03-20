@@ -1,4 +1,0 @@
-/^# DO NOT DELETE THIS LINE/+1,$d
-$r makedep
-w
-q
