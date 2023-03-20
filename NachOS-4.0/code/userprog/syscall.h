@@ -15,8 +15,6 @@
 
 #include "copyright.h"
 #include "errno.h"
-
-#include "synchconsole.h"
 /* system call codes -- used by the stubs to tell the kernel which system call
  * is being asked for
  */
@@ -25,7 +23,7 @@
 #define SC_Exec		2
 #define SC_Join		3
 #define SC_Create	4
-#define SC_Remove   5
+#define SC_Remove       5
 #define SC_Open		6
 #define SC_Read		7
 #define SC_Write	8
@@ -36,15 +34,8 @@
 #define SC_ExecV	13
 #define SC_ThreadExit   14
 #define SC_ThreadJoin   15
-#define SC_SocketTCP_Open 16
-#define SC_SocketTCP_Connect 17
-#define SC_SocketTCP_Send 18
-#define SC_SocketTCP_Receive 19
-#define SC_SocketTCP_Close 20
 
-#define SC_Add	    42
-#define MaxFileLength   32
-#define MaxFile     20
+#define SC_Add		42
 
 #ifndef IN_ASM
 
@@ -182,9 +173,6 @@ int ThreadJoin(ThreadId id);
  * Deletes current thread and returns ExitCode to every waiting lokal thread.
  */
 void ThreadExit(int ExitCode);	
-
-int SocketTCP();
-
 
 #endif /* IN_ASM */
 

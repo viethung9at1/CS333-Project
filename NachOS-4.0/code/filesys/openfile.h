@@ -23,23 +23,15 @@
 #include "copyright.h"
 #include "utility.h"
 #include "sysdep.h"
-#define FILESYS_STUB
+
 #ifdef FILESYS_STUB			// Temporarily implement calls to 
 					// Nachos file system as calls to UNIX!
 					// See definitions listed under #else
 class OpenFile {
   public:
-    OpenFile(int f) { 
-		file = f; 
-		currentOffset = 0; 
-	}	// open the file
+    OpenFile(int f) { file = f; currentOffset = 0; }	// open the file
     ~OpenFile() { Close(file); }			// close the file
-	OpenFile(int f, int type, char* name){
-		file=f; 
-		currentOffset=0; 
-		t=type;
-		fName=name;
-	}
+
     int ReadAt(char *into, int numBytes, int position) { 
     		Lseek(file, position, 0); 
 		return ReadPartial(file, into, numBytes); 
@@ -61,14 +53,7 @@ class OpenFile {
 		}
 
     int Length() { Lseek(file, 0, 2); return Tell(file); }
-	int GetCurrentPos(){currentOffset=Tell(file); return currentOffset;}
-	void Seek(int position)
-	{
-    	Lseek(file, position, 0); 
-	}	
-
-	int t; //0: rw, 1: r, 2: stdin, 3: stdout
-	char* fName;
+    
   private:
     int file;
     int currentOffset;
@@ -79,10 +64,10 @@ class FileHeader;
 
 class OpenFile {
   public:
-	int t; //0: rw, 1: r, 2: stdin, 3: stdout
     OpenFile(int sector);		// Open a file whose header is located
 					// at "sector" on the disk
     ~OpenFile();			// Close the file
+
     void Seek(int position); 		// Set the position from which to 
 					// start reading/writing -- UNIX lseek
 
