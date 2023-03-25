@@ -51,7 +51,7 @@ Next, I will continue to the function connectSystemSocket() in the file “excep
 -	Write 0 to register 2, delete the IP, and increase the PC.
 Finally, I will handle this case in function ExceptionHandler().
 
-## Send socket TCP method:
+### Send socket TCP method:
 The sendTCP() function sends data over a TCP connection using a given socket identifier, data buffer, and port. It returns -1 for invalid sockets, 0 if the socket is not open or initialized, and otherwise calls another sendTCP function with the associated file descriptor to perform the actual data transfer.
 Next, I will continue to the function sendSystemSocket(), which is defined in the file “exception.cc”. We can illustrate this function as that:
 -	Reads the socket ID from a register.
@@ -64,6 +64,15 @@ Next, I will continue to the function sendSystemSocket(), which is defined in th
 -	Writes the return value to a register, deallocates the buffer, and increases the program counter.
 -	The function mainly deals with reading values from registers, managing memory, and handling the TCP data transfer within the kernel.
 
+### Receive socket TCP method:
+We will demonstrate how two function, which is related to this question work:
+-	receiveTCP() in “filesys.h”: This function is used to receive data from a TCP socket. It takes three arguments: socketid, buffer, and port. The function checks if the provided socketid is valid, and whether the associated file socket exists. If the conditions are met, it calls another version of receiveTCP with the file descriptor, buffer, and port as arguments. The function returns -1 if there's an error, 0 if the file socket is null, or the result of the nested receiveTCP call.
+-	receiveSystemSocket() in “exception.cc”: This function is used to handle a system call for receiving data over a TCP socket. It reads the socket ID, virtual address, and length from the machine registers, and then allocates a buffer of the specified length. It then calls the receiveTCP function from the file system using the provided socketID, buffer, and length. Depending on the return value of receiveTCP, the function displays an appropriate message (failed to send, connection closed, or successfully received data) and writes the received data to the user space if applicable. Finally, it updates the return value in the machine register and increases the program counter.
+
+### Close socket TCP method:
+-	int closeTCP(int socketid): This function takes an integer socketid as input, representing the ID of a socket to be closed. It checks whether the given socket ID is within valid range (between reverseFD and MaxFile). If it's not in range or if the socket is not open (i.e., fileSocket[socketid] is nullptr), the function returns -1, indicating an error. Otherwise, it proceeds to close the socket by deleting the corresponding fileSocket entry and setting it to nullptr. Finally, it returns 0, indicating a successful close operation.
+
+-	void systemCloseSocket(): This function is a higher-level wrapper for the closeTCP() function. It first reads the socket ID from register 4 and stores it in socketID. It then calls the closeTCP() function with the obtained socket ID and stores the return value in rVal. The return value (0 for success, -1 for error) is then written to register 2. Finally, it calls PCIncrease() to increment the program counter, allowing the program to proceed to the next instruction.
 
 
 
