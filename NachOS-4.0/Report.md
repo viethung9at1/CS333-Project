@@ -51,5 +51,19 @@ Next, I will continue to the function connectSystemSocket() in the file “excep
 -	Write 0 to register 2, delete the IP, and increase the PC.
 Finally, I will handle this case in function ExceptionHandler().
 
+## Send socket TCP method:
+The sendTCP() function sends data over a TCP connection using a given socket identifier, data buffer, and port. It returns -1 for invalid sockets, 0 if the socket is not open or initialized, and otherwise calls another sendTCP function with the associated file descriptor to perform the actual data transfer.
+Next, I will continue to the function sendSystemSocket(), which is defined in the file “exception.cc”. We can illustrate this function as that:
+-	Reads the socket ID from a register.
+-	Reads the virtual address of the data buffer from a register.
+-	Translates the virtual address to a system address, and copies the buffer content.
+-	Checks if there's enough memory, and if not, it writes an error value to a register, deallocates the buffer, and increases the program counter before returning.
+-	Reads the data length from a register.
+-	Sends the data using the sendTCP function of the file system, and stores the return value.
+-	Prints the result of the data transfer (failed, connection closed, or successful).
+-	Writes the return value to a register, deallocates the buffer, and increases the program counter.
+-	The function mainly deals with reading values from registers, managing memory, and handling the TCP data transfer within the kernel.
+
+
 
 
