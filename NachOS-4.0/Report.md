@@ -24,3 +24,32 @@ We have system call **SC_Write** to do this work. Firstly, we check that if the 
 To seek the file, we use the system call **SC_Seek**. This system call use the build in *LSeek* function in *sysdep.h*. Before seeking one file, it check if the file is being opened. It throw exception if the file is not existed or the file is *stdin* or *stdout*, these file can't be seeked 
 ### Remove  
 We use **SC_Remove** to remove the file. To remove the file, we check if the file is opening. If the file is opening, the system throw an exception because that the opening file can't be deleted. Else, the file is deleted using NachOS's built-in function *fileSystem->Remove*
+
+## Implement system call for Network operations
+### Initialize socket TCP method:
+First, I will define some constants: reverseFD = 2 and MaxFileOpen = 20 in the file “filesys.h”. 
+This function generates a TCP socket by identifying an available slot in an array named fileSocket. The creation of the fileSocket array requires the definition of a user-friendly openFileSocket struct that manages all files associated with this section. For additional information, refer to the “filesys.h” file.
+
+After checking there is a free slot or not by using the function checkSlotSocket() in the “filesys.h”, we will call the function openSocketInternet(), which is initialized in the file sysdep.cc. This function opens a socket for an internet connection using the TCP protocol. It first creates a socket by calling the socket function with the address family set to AF_INET for IPv4, the socket type set to SOCK_STREAM for a reliable stream-oriented connection, and the protocol set to 0 to use the default protocol for the specified address family and socket type.
+
+Next, I'll proceed with the createTCP() function, found in the "filesys.h" file. As mentioned earlier, I'll first search for an available slot, referred to as parameter "a". If such a slot is identified, I will invoke the openSocketInternet() function and pass parameter "a" to the corresponding position within the fileSocket array. Ultimately, the function will return the index of position "a".
+
+Finally, we will process the function createTCP() in the file “exception.cc”.  The openSystemSocket() function is responsible for creating a socket for the system. It first calls the createTCP() function to obtain a socket ID. If the socket ID is -1, indicating an error, it prints an error message and writes -1 to register 2. If the socket is successfully created, it prints a success message along with the socket ID and writes the socket ID to register 2. Finally, the program counter is incremented in both cases.
+
+### Connect socket TCP method:
+For this function, I will reuse all of the function which is mentioned in the method of creating socket TCP. This function attempts to establish a TCP connection with the specified IP address and port number. It first checks if the socket ID is within the valid range and if the socket at the given socket ID exists. If both conditions are met, the function calls connectTCP() with the fileSocket, IP address, and port number as arguments and returns the result.
+Next, I will continue to the function connectSystemSocket() in the file “exception.cc”. This function can be described as that: 
+-	Print a debug message indicating the function has been called.
+-	Read the socket ID from register 4.
+-	Read the virtual address from register 5.
+-	Read the IP address from the given virtual address (using the User2System() function) and store it in the ip variable.
+-	Check if the IP address is NULL; if so, write -1 to register 2, delete the IP, increase the program counter (PC), and return from the function.
+-	Read the port from register 6.
+-	Attempt to connect the TCP socket using the connectTCP() function with the given socket ID, IP address, and port.
+-	If the connection fails, print an error message, write -1 to register 2, delete the IP, increase the PC, and return from the function.
+-	If the connection is successful, print a success message with the socket ID, IP address, and port.
+-	Write 0 to register 2, delete the IP, and increase the PC.
+Finally, I will handle this case in function ExceptionHandler().
+
+
+
