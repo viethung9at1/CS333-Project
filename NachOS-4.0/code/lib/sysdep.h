@@ -65,12 +65,16 @@ void bzero(void *s, size_t n);
 
 // Interprocess communication operations, for simulating the network
 extern int OpenSocket();
-extern void CloseSocket(int sockID);
 extern void AssignNameToSocket(char *socketName, int sockID);
 extern void DeAssignNameToSocket(char *socketName);
 extern bool PollSocket(int sockID);
 extern void ReadFromSocket(int sockID, char *buffer, int packetSize);
 extern void SendToSocket(int sockID, char *buffer, int packetSize,char *toName);
-extern int openSocketInternet();
+extern int OpenSocketInternet();
+
+extern int ConnectTCP(int fd, char *ip, int port);
+extern int Send(int fd, char *buffer, int len);
+extern int Receive(int fd, char *buffer, int len);
+extern void CloseSocket(int sockID);
 
 #endif // SYSDEP_H

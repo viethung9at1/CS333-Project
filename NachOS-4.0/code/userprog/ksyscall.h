@@ -13,6 +13,8 @@
 
 #include "kernel.h"
 
+#include "synchconsole.h"
+
 
 
 

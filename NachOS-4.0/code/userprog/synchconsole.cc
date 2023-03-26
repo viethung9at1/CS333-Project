@@ -47,8 +47,10 @@ SynchConsoleInput::GetChar()
     char ch;
 
     lock->Acquire();
+    //cerr << "WAITing" << endl;
     waitFor->P();	// wait for EOF or a char to be available.
     ch = consoleInput->GetChar();
+    //cerr << "XONG" << endl;
     lock->Release();
     return ch;
 }

@@ -140,13 +140,6 @@ FileSystem::FileSystem(bool format)
         freeMapFile = new OpenFile(FreeMapSector);
         directoryFile = new OpenFile(DirectorySector);
     }
-    openningFile=new OpenFile*[10];
-    index=0;
-    for(int i=0;i<MaxFile;i++) openningFile[i]=NULL;
-    openningFile[index++]=this->Open("stdin",2);
-    openningFile[index++]=this->Open("stdout",3);
-    this->Create("stdin", 0);
-	this->Create("stdout", 0);
 }
 
 //----------------------------------------------------------------------
@@ -233,7 +226,6 @@ FileSystem::Create(char *name, int initialSize)
 OpenFile *
 FileSystem::Open(char *name)
 { 
-    int freeSlot = this->FindFreeSlot();
     Directory *directory = new Directory(NumDirEntries);
     OpenFile *openFile = NULL;
     int sector;
@@ -244,8 +236,9 @@ FileSystem::Open(char *name)
     if (sector >= 0) 		
 	openFile = new OpenFile(sector);	// name was found in directory 
     delete directory;
-    return openFile[index];				// return NULL if not found
+    return openFile;				// return NULL if not found
 }
+
 OpenFile* FileSystem::Open(char *name, int type)
 {
 	int freeSlot = this->FindFreeSlot();
@@ -253,15 +246,23 @@ OpenFile* FileSystem::Open(char *name, int type)
 	OpenFile *openFile = NULL;
 	int sector;
 
-	DEBUG('f', "Opening file %s\n", name);
+    DEBUG(dbgFile, "Opening file" << name);
 	directory->FetchFrom(directoryFile);
 	sector = directory->Find(name);
 	if (sector >= 0)
-		openf[freeSlot] = new OpenFile(sector, type);	// name was found in directory 
+		openingFile[freeSlot] = new OpenFile(sector, type);	// name was found in directory 
 	delete directory;
-	//index++;
-	return openf[freeSlot];				// return NULL if not found
+	
+	return openingFile[freeSlot];				// return NULL if not found
 }
+
+int FileSystem::FindFreeSlot(){
+    for (int i=2; i<MaxFileOpen; ++i){
+        if (openingFile[i] == NULL) return i;
+    }
+    return -1;
+}
+
 //----------------------------------------------------------------------
 // FileSystem::Remove
 // 	Delete a file from the file system.  This requires:
@@ -359,6 +360,5 @@ FileSystem::Print()
     delete freeMap;
     delete directory;
 } 
-const MaxFile=20;
 
 #endif // FILESYS_STUB

@@ -23,15 +23,20 @@
 #include "copyright.h"
 #include "utility.h"
 #include "sysdep.h"
-#define FILESYS_STUB
+
 #ifdef FILESYS_STUB			// Temporarily implement calls to 
 					// Nachos file system as calls to UNIX!
 					// See definitions listed under #else
 class OpenFile {
   public:
-    OpenFile(int f) { file = f; currentOffset = 0; }	// open the file
+  int type; //0: read write, 1: read, 2: stdin, 3: stdout, 4: write clear all
+  char* fName; // store file name in case need to check
+
+    OpenFile(int f) { file = f; currentOffset = 0; }	// open the file	
+	OpenFile(int f, int t, char* name){file=f; currentOffset=0; type=t; fName=name;} // with type and name
+
     ~OpenFile() { Close(file); }			// close the file
-	OpenFile(int f, int type, char* name){file=f; currentOffset=0; t=type;fName=name;}
+
     int ReadAt(char *into, int numBytes, int position) { 
     		Lseek(file, position, 0); 
 		return ReadPartial(file, into, numBytes); 
@@ -54,13 +59,12 @@ class OpenFile {
 
     int Length() { Lseek(file, 0, 2); return Tell(file); }
 	int GetCurrentPos(){currentOffset=Tell(file); return currentOffset;}
-	void Seek(int position)
-	{
-    	Lseek(file, position, 0); 
-	}	
-
-	int t; //0: rw, 1: r, 2: stdin, 3: stdout
-	char* fName;
+  	int Seek(int position) {
+		Lseek(file, position, 0);
+		currentOffset = Tell(file);
+		return currentOffset;
+	}
+    
   private:
     int file;
     int currentOffset;
@@ -71,10 +75,15 @@ class FileHeader;
 
 class OpenFile {
   public:
-	int t; //0: rw, 1: r, 2: stdin, 3: stdout
+  int type; //0: read write, 1: read, 2: stdin, 3: stdout, 4: write clear all
+  char* fName; // store file name in case need to check
     OpenFile(int sector);		// Open a file whose header is located
+    OpenFile(int sector, int type);	
+	OpenFile(int sector, int type, char* name);
+
 					// at "sector" on the disk
     ~OpenFile();			// Close the file
+
     void Seek(int position); 		// Set the position from which to 
 					// start reading/writing -- UNIX lseek
 
@@ -94,6 +103,11 @@ class OpenFile {
 					// than the UNIX idiom -- lseek to 
 					// end of file, tell, lseek back 
     
+    int GetCurrentPos()
+	{
+		return seekPosition;
+	}
+
   private:
     FileHeader *hdr;			// Header for this file 
     int seekPosition;			// Current position within the file

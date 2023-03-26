@@ -16,7 +16,8 @@
 #include "copyright.h"
 #include "errno.h"
 
-#include "synchconsole.h"
+
+
 /* system call codes -- used by the stubs to tell the kernel which system call
  * is being asked for
  */
@@ -25,7 +26,7 @@
 #define SC_Exec		2
 #define SC_Join		3
 #define SC_Create	4
-#define SC_Remove   5
+#define SC_Remove       5
 #define SC_Open		6
 #define SC_Read		7
 #define SC_Write	8
@@ -36,6 +37,7 @@
 #define SC_ExecV	13
 #define SC_ThreadExit   14
 #define SC_ThreadJoin   15
+
 #define SC_SocketTCP_Open 16
 #define SC_SocketTCP_Connect 17
 #define SC_SocketTCP_Send 18
@@ -43,8 +45,9 @@
 #define SC_SocketTCP_Close 20
 
 #define SC_Add		42
-#define MaxFileLength   32
-#define MaxFile 20
+
+#define MaxFileLength 32
+#define MAXIpAddressLength 15
 
 #ifndef IN_ASM
 
@@ -114,9 +117,13 @@ typedef int OpenFileId;
  * the console device.
  */
 
-#define ConsoleInput	0  
-#define ConsoleOutput	1  
+#define _ConsoleInput	0  // Change from ConsoleInput to this to avoid duplication
+#define _ConsoleOutput	1  // Change from ConsoleOutput to this to avoid duplication
  
+#define _ReadWrite	0
+#define _ReadOnly	1 
+#define _WriteNEW   4
+
 /* Create a Nachos file, with name "name" */
 /* Note: Create does not open the file.   */
 /* Return 1 on success, negative error code on failure */
@@ -128,7 +135,9 @@ int Remove(char *name);
 /* Open the Nachos file "name", and return an "OpenFileId" that can 
  * be used to read and write to the file.
  */
-OpenFileId Open(char *name);
+//OpenFileId Open(char *name);
+OpenFileId Open(char *name, int type);
+
 
 /* Write "size" bytes from "buffer" to the open file. 
  * Return the number of bytes actually read on success.
@@ -183,9 +192,16 @@ int ThreadJoin(ThreadId id);
  */
 void ThreadExit(int ExitCode);	
 
-int SocketTCP();
 
-const int MaxFileLength=32;
+/*
+ * SOCKET 
+*/
+int SocketTCP();
+int Connect(int socketid, char* ip, int port);
+//int Send(int socketid, char *buffer, int len);
+//int Receive(int socketid, char *buffer, int len);
+int CloseSocketTCP(int socketid);
+
 #endif /* IN_ASM */
 
 #endif /* SYSCALL_H */
