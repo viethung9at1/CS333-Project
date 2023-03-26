@@ -34,14 +34,19 @@ void _strcpy(char* dest, const char* src) {
 
 
 int main() { 
-    int sId, i, PP, isBug, Id1, Id2, len;
-    char content[101], IP[MAXIpAddressLength+1], Port[7];
+    int sId, i, Id1, Id2, len;
+    //int PP;
+    char content[101];
+    //char IP[MAXIpAddressLength+1], Port[7];
     char fileA[MaxFileLength+1], fileB[MaxFileLength+1];
     char sms[100];
-    _strcpy(sms, "IP:");Write(sms, 20, _ConsoleOutput);
-    Read(IP, MAXIpAddressLength, _ConsoleInput);
-    _strcpy(sms, "Port:");Write(sms, 20, _ConsoleOutput);
-    Read(Port, 7, _ConsoleInput);
+    //_strcpy(sms, "IP:");Write(sms, 20, _ConsoleOutput);
+    //Read(IP, MAXIpAddressLength, _ConsoleInput);
+    //_strcpy(sms, "Port:");Write(sms, 20, _ConsoleOutput);
+    //Read(Port, 7, _ConsoleInput);
+
+    int PP = 1234;
+    char IP[] = "127.0.0.1";
 
     _strcpy(sms, "file source:");Write(sms, 30, _ConsoleOutput);
     Read(fileA, MaxFileLength, _ConsoleInput);
@@ -57,8 +62,7 @@ int main() {
 
     // SOCKET
     sId = SocketTCP();
-    isBug = 1;
-    PP = string_to_int(Port);
+    //PP = string_to_int(Port);
     
     if (Connect(sId, IP, PP) == 0){
         if (Write(content, 101, sId) > 0){

@@ -515,6 +515,8 @@ void handle_SC_SocketTCP_Connect(){
 	DEBUG('a', "\n Reading port\n");
 	port = kernel -> machine -> ReadRegister(6);
 
+	//cerr << ip << ' ' << socketID << ' ' << port << endl;
+
 	if(kernel -> fileSystem -> connectTCP(socketID, ip, port) == -1){
 		//printf("\nFailed to connect to SocketId: %d, IP: %s, Port: %d\n", socketID, ip, port);
     	kernel->machine->WriteRegister(2, -1);
