@@ -119,7 +119,7 @@ void PCIncrease() {
 	kernel->machine->WriteRegister(PCReg, kernel->machine->ReadRegister(PCReg) + 4);
 
 	/* set next programm counter for brach execution */
-	kernel->machine->WriteRegister(NextPCReg, kernel->machine->ReadRegister(PCReg)+4);
+	kernel->machine->WriteRegister(NextPCReg, kernel->machine->ReadRegister(PCReg)+8);
 }
 
 void handle_SC_Add(){
