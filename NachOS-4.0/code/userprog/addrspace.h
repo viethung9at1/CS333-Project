@@ -31,7 +31,8 @@ class AddrSpace {
     void Execute();             	// Run a program
 					// assumes the program has already
                                         // been loaded
-
+    void Unlock();
+    void Lock1();
     void SaveState();			// Save/restore address space-specific
     void RestoreState();		// info on a context switch 
 

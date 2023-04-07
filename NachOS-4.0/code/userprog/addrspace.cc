@@ -20,7 +20,8 @@
 #include "addrspace.h"
 #include "machine.h"
 #include "noff.h"
-
+#include "synch.h"
+Lock* addrSpaceLock=NULL;
 //----------------------------------------------------------------------
 // SwapHeader
 // 	Do little endian to big endian conversion on the bytes in the 
@@ -75,6 +76,7 @@ AddrSpace::AddrSpace()
 	pageTable[i].use = FALSE;
 	pageTable[i].dirty = FALSE;
 	pageTable[i].readOnly = FALSE;  
+    addrSpaceLock=new Lock("AddrSpaceLock");
     }
     
     // zero out the entire address space
@@ -310,7 +312,10 @@ AddrSpace::Translate(unsigned int vaddr, unsigned int *paddr, int isReadWrite)
 
     return NoException;
 }
-
-
-
+void AddrSpace::Unlock(){
+    addrSpaceLock->Release();
+}
+void AddrSpace::Lock1(){
+    addrSpaceLock->Acquire();
+}
 
