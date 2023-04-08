@@ -46,6 +46,8 @@ Thread::Thread(char *threadName)
                                 // of machine registers
     }
     space = NULL;
+    processID=0;
+    exitStatus=0;
 }
 
 //----------------------------------------------------------------------
@@ -89,7 +91,7 @@ Thread::~Thread()
 //	"arg" is a single argument to be passed to the procedure.
 //----------------------------------------------------------------------
 
-void Thread::Fork(VoidFunctionPtr func, void *arg)
+void Thread::Fork(VoidFunctionPtr func, void* arg)
 {
     Interrupt *interrupt = kernel->interrupt;
     Scheduler *scheduler = kernel->scheduler;
@@ -433,4 +435,7 @@ void Thread::Resume(){
         kernel->scheduler->ReadyToRun(this);
         status=READY;
     }
+}
+void Thread::FreeSpace(){
+    if(space!=0) delete space;
 }

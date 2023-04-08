@@ -89,8 +89,10 @@ class Thread {
 					// is called
 
     // basic thread operations
-
-    void Fork(VoidFunctionPtr func, void *arg); 
+    void FreeSpace();
+    int processID;
+    int exitStatus;
+    void Fork(VoidFunctionPtr func, void* arg); 
     				// Make thread run (*func)(arg)
     void Yield();  		// Relinquish the CPU if any 
 				// other thread is runnable

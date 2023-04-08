@@ -40,6 +40,7 @@ class Bitmap {
     void Clear(int which);  	// Clear the "nth" bit
     bool Test(int which) const;	// Is the "nth" bit set?
     int FindAndSet();         // Return the # of a clear bit, and as a side
+    
 				// effect, set the bit. 
 				// If no bits are clear, return -1.
     int NumClear() const;	// Return the number of clear bits

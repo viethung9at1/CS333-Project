@@ -35,7 +35,6 @@
 #include "copyright.h"
 #include "synch.h"
 #include "main.h"
-
 //----------------------------------------------------------------------
 // Semaphore::Semaphore
 // 	Initialize a semaphore, so that it can be used for synchronization.
@@ -295,3 +294,5 @@ void Condition::Broadcast(Lock* conditionLock)
         Signal(conditionLock);
     }
 }
+bool Lock::IsHeldByCurrentThread() { 
+    		return lockHolder == kernel->currentThread; }
