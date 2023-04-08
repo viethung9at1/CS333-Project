@@ -18,20 +18,14 @@
 #include "alarm.h"
 #include "filesys.h"
 #include "machine.h"
-#include"bitmap.h"
-#include"stable.h"
-#include"ptable.h"
-#include "synch.h"
+
+
 class PostOfficeInput;
 class PostOfficeOutput;
 class SynchConsoleInput;
 class SynchConsoleOutput;
 class SynchDisk;
-extern Machine* machine;	// user program memory and registers
-extern Semaphore *addrLock;	// semaphore
-extern Bitmap *gPhysPageBitMap;	// quan ly cac frame
-extern PTable *pTab;		// quan ly bang tien trinh
-extern STable *semTab;		// quan ly semaphore
+
 class Kernel {
   public:
     Kernel(int argc, char **argv);
