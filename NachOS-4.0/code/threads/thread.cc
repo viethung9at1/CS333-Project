@@ -21,7 +21,7 @@
 #include "switch.h"
 #include "synch.h"
 #include "sysdep.h"
-
+#include"main.h"
 // this is put at the top of the execution stack, for detecting stack overflows
 const int STACK_FENCEPOST = 0xdedbeef;
 
@@ -35,6 +35,7 @@ const int STACK_FENCEPOST = 0xdedbeef;
 
 Thread::Thread(char *threadName)
 {
+    processID=0;
     name = threadName;
     stackTop = NULL;
     stack = NULL;
@@ -433,4 +434,7 @@ void Thread::Resume(){
         kernel->scheduler->ReadyToRun(this);
         status=READY;
     }
+}
+void Thread::FreeSpace(){
+    if(space>0) delete space;
 }

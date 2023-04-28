@@ -295,3 +295,6 @@ void Condition::Broadcast(Lock* conditionLock)
         Signal(conditionLock);
     }
 }
+
+bool Lock::IsHeldByCurrentThread() { 
+    		return lockHolder == kernel->currentThread; }
