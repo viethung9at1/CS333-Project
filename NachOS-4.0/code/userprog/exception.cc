@@ -64,6 +64,14 @@ void handle_SC_SocketTCP_Send();
 void handle_SC_SocketTCP_Receive();
 void handle_SC_SocketTCP_Close();
 
+void handle_SC_Exec();
+void handle_SC_JOIN();
+void handle_SC_EXIT();
+void handle_SC_CreateSemaphore();
+void handle_SC_Wait();
+void handle_SC_Signal();
+
+
 // Input: - User space address (int)
 // - Limit of buffer (int)
 // Output:- Buffer (char*)
@@ -680,6 +688,143 @@ void handle_SC_SocketTCP_Close()
 	return PCIncrease();
 }
 
+void handle_SC_EXEC(){
+	int vAddr;
+	vAddr = kernel -> machine -> ReadRegister(4);
+	char* name;
+	name = User2System(vAddr, MaxFileLength + 1);
+
+	if(name == NULL){
+		DEBUG('a', "\n Not enough memory in System");
+		printf("\n Not enough memory in System");
+		kernel -> machine -> WriteRegister(2, -1);
+		return;
+	}
+
+	OpenFile * file1 = kernel -> fileSystem -> Open(name);
+	if(file1 == NULL){
+		printf("\nExec:: Can't open this file.");
+		kernel -> machine ->WriteRegister(2,-1);
+		return PCIncrease();
+	}
+
+	delete file1;
+
+	int n = kernel -> pTab -> ExecUpdate(name);
+	kernel -> machine -> WriteRegister(2, n);
+
+	delete [] name;
+	return PCIncrease();
+}
+
+void handle_SC_JOIN(){
+	int n = kernel -> machine -> ReadRegister(4);
+	int result = kernel -> pTab -> JoinUpdate(n);
+
+	kernel -> machine -> WriteRegister(2, result);
+	return PCIncrease();
+}
+
+void handle_SC_EXIT(){
+	int eStatus = kernel -> machine -> ReadRegister(4);
+
+	if(eStatus != 0) return PCIncrease();
+
+	int res = kernel -> pTab -> ExitUpdate(eStatus);
+	kernel -> currentThread -> FreeSpace();
+	kernel -> currentThread -> Finish();
+	return PCIncrease();
+}
+
+void handle_SC_CreateSemaphore(){
+	int vAddr = kernel -> machine -> ReadRegister(4);
+	int sVal = kernel -> machine -> ReadRegister(5);
+
+	char* name = User2System(vAddr, MaxFileLength + 1);
+
+	if(name == NULL){
+		DEBUG('a', "\n Not enough memory in System");
+		printf("\n Not enough memory in System");
+		kernel -> machine -> WriteRegister(2, -1);
+		delete[] name;
+		return PCIncrease();
+	}
+
+	int result = kernel -> semTab -> Create(name, sVal);
+	
+	if(result == -1){
+		DEBUG('a', "\n Cannot create semaphore");
+		printf("\n Cannot create semaphore");
+		kernel -> machine -> WriteRegister(2, -1);
+		delete [] name;
+		return PCIncrease();		
+	}
+			
+	delete [] name;
+	kernel -> machine -> WriteRegister(2, result);
+	return PCIncrease();
+}
+
+void handle_SC_Wait(){
+	int vAddr = kernel -> machine -> ReadRegister(4);
+
+	char *name = User2System(vAddr, MaxFileLength + 1);
+	if(name == NULL){
+		DEBUG('a', "\n Not enough memory in System");
+		printf("\n Not enough memory in System");
+		kernel -> machine -> WriteRegister(2, -1);
+		delete[] name;
+		return PCIncrease();
+	}
+			
+	int result = kernel -> semTab -> Wait(name);
+
+	if(result == -1){
+		DEBUG('a', "\n This semaphore does not exist!");
+		printf("\n This semaphore does not exist!");
+		kernel -> machine->WriteRegister(2, -1);
+		delete[] name;
+		return PCIncrease();		
+	}
+			
+	delete[] name;
+	kernel -> machine->WriteRegister(2, result);
+	return PCIncrease();
+}
+
+void handle_SC_Signal(){
+	int vAddr = kernel -> machine -> ReadRegister(4);
+
+	char *name = User2System(vAddr, MaxFileLength + 1);
+	if(name == NULL){
+		DEBUG('a', "\n Not enough memory in System");
+		printf("\n Not enough memory in System");
+		kernel -> machine->WriteRegister(2, -1);
+		delete[] name;
+		return PCIncrease();
+	}
+			
+	int result = kernel -> semTab -> Signal(name);
+
+	if(result == -1){
+		DEBUG('a', "\n This semaphore does not exist!");
+		printf("\n This semaphore does not exist!");
+			kernel -> machine -> WriteRegister(2, -1);
+			delete[] name;
+			return PCIncrease();				
+	}
+			
+	delete[] name;
+	kernel -> machine -> WriteRegister(2, result);
+	return PCIncrease();
+}
+
+void handle_SC_EXEC1(){
+	
+}
+
+
+
 void ExceptionHandler(ExceptionType which)
 {
 	int type = kernel->machine->ReadRegister(2);
@@ -727,6 +872,22 @@ void ExceptionHandler(ExceptionType which)
 			return handle_SC_SocketTCP_Receive();
 		case SC_SocketTCP_Close:
 			return handle_SC_SocketTCP_Close();
+
+		// Multiprogramming
+		case SC_EXEC:
+			return handle_SC_Create();
+		case SC_JOIN:
+			return handle_SC_JOIN();
+		case SC_EXIT:
+			return handle_SC_EXIT();
+		case SC_CreateSemaphore:
+			return handle_SC_CreateSemaphore();
+		case SC_Wait:
+			return handle_SC_Wait();
+		case SC_Signal:
+			return handle_SC_Signal();
+		case SC_EXEC1:
+			return handle_SC_EXEC1();
 
 		default:
 			cerr << "Unexpected system call " << type << "\n";

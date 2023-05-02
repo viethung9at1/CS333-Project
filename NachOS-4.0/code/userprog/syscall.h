@@ -43,6 +43,13 @@
 #define SC_SocketTCP_Send 18
 #define SC_SocketTCP_Receive 19
 #define SC_SocketTCP_Close 20
+#define SC_EXEC 21
+#define SC_JOIN 22
+#define SC_EXIT 23
+#define SC_CreateSemaphore 24
+#define SC_Wait 25
+#define SC_Signal 26
+#define SC_EXEC1 27
 
 #define SC_Add		42
 
