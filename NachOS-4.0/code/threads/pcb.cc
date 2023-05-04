@@ -6,7 +6,7 @@
 #include "addrspace.h"
 #include"main.h"
 
-//extern void StartProcess_2(int id);
+extern void StartProcess_2(int id);
 
 PCB::PCB(int id)
 {
@@ -91,8 +91,30 @@ int PCB::Exec(char* filename, int id)
 	}
 	this->thread->processID = id;
 	this->parentID = kernel->currentThread->processID;
-
+	this->thread->Fork((VoidFunctionPtr)StartProcess_2,(void*)id);
     multex->V();
 	return id;
 
 }
+void StartProcess_2(int id)
+{
+    char* fileName = kernel->pTab->GetFileName(id);
+
+    AddrSpace *space;
+    space = new AddrSpace();
+
+	if(space == NULL)
+	{
+		printf("\nPCB::Exec : Can't create AddSpace.");
+		return;
+	}
+
+    kernel->currentThread->space = space;
+
+    space->InitRegisters();		
+    space->RestoreState();		
+
+    kernel->machine->Run();		
+    ASSERT(FALSE);		
+}
+
