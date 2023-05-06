@@ -875,7 +875,7 @@ void ExceptionHandler(ExceptionType which)
 
 		// Multiprogramming
 		case SC_EXEC:
-			return handle_SC_Create();
+			return handle_SC_EXEC();
 		case SC_JOIN:
 			return handle_SC_JOIN();
 		case SC_EXIT:
