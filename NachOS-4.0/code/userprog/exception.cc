@@ -874,11 +874,11 @@ void ExceptionHandler(ExceptionType which)
 			return handle_SC_SocketTCP_Close();
 
 		// Multiprogramming
-		case SC_EXEC:
+		case SC_Exec:
 			return handle_SC_EXEC();
-		case SC_JOIN:
+		case SC_Join:
 			return handle_SC_JOIN();
-		case SC_EXIT:
+		case SC_Exit:
 			return handle_SC_EXIT();
 		case SC_CreateSemaphore:
 			return handle_SC_CreateSemaphore();
@@ -886,7 +886,7 @@ void ExceptionHandler(ExceptionType which)
 			return handle_SC_Wait();
 		case SC_Signal:
 			return handle_SC_Signal();
-		case SC_EXEC1:
+		case SC_ExecV:
 			return handle_SC_EXEC1();
 
 		default:

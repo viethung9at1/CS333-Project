@@ -12,4 +12,3 @@ int main()
     Join(newProc1);
     Join(newProc2);
 }
-
