@@ -47,12 +47,25 @@ SynchConsoleInput::GetChar()
     char ch;
 
     lock->Acquire();
-    //cerr << "WAITing" << endl;
     waitFor->P();	// wait for EOF or a char to be available.
     ch = consoleInput->GetChar();
-    //cerr << "XONG" << endl;
     lock->Release();
     return ch;
+}
+
+//----------------------------------------------------------------------
+// SynchConsoleInput::GetString
+//      Read a string typed at the keyboard, waiting if necessary.
+//----------------------------------------------------------------------
+int SynchConsoleInput::GetString(char* buffer, int count) {
+    for (int i = 0; i < count; i++) {
+        buffer[i] = GetChar();
+        if (buffer[i] == EOF || buffer[i] == 0x0a) { // enter key
+            buffer[i] = 0;
+            return i;
+        }
+    }
+    return count;
 }
 
 //----------------------------------------------------------------------
@@ -106,6 +119,22 @@ SynchConsoleOutput::PutChar(char ch)
     consoleOutput->PutChar(ch);
     waitFor->P();
     lock->Release();
+}
+
+// //----------------------------------------------------------------------
+// // SynchConsoleOutput::PutString
+// //      Write a string to the console display, waiting if necessary.
+// //----------------------------------------------------------------------
+
+int
+SynchConsoleOutput::PutString(char* buffer, int count)
+{
+    for (int i = 0; i < count; i++) {
+        if (buffer[i] == 0)
+            return i;
+        PutChar(buffer[i]);
+    }
+    return count;
 }
 
 //----------------------------------------------------------------------

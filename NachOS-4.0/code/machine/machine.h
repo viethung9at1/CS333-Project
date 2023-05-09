@@ -24,6 +24,7 @@
 #include "copyright.h"
 #include "utility.h"
 #include "translate.h"
+#include "bitmap.h"
 
 // Definitions related to the size, and format of user memory
 
@@ -113,6 +114,9 @@ class Machine {
 
     char *mainMemory;		// physical memory to store user program,
 				// code and data, while executing
+	
+	Bitmap* pageTableMap;	// bitmap to keep track of free pages	
+
 
 // NOTE: the hardware translation of virtual addresses in the user program
 // to physical addresses (relative to the beginning of "mainMemory")
@@ -154,7 +158,7 @@ class Machine {
     
 
 
-    ExceptionType Translate(int virtAddr, int* physAddr, int size,bool writing);
+    ExceptionType Translate(int vAddr, int* physAddr, int size,bool writing);
     				// Translate an address, and check for 
 				// alignment.  Set the use and dirty bits in 
 				// the translation entry appropriately,
