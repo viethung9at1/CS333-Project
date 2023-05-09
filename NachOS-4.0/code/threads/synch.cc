@@ -128,7 +128,7 @@ SelfTestHelper (Semaphore *pong)
 {
     for (int i = 0; i < 10; i++) {
         ping->P();
-	pong->V();
+	    pong->V();
     }
 }
 
@@ -142,7 +142,7 @@ Semaphore::SelfTest()
     helper->Fork((VoidFunctionPtr) SelfTestHelper, this);
     for (int i = 0; i < 10; i++) {
         ping->V();
-	this->P();
+	    this->P();
     }
     delete ping;
 }

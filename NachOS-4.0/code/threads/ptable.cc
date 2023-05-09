@@ -13,7 +13,6 @@ PTable::PTable(int size)
     psize = size;
     bm = new Bitmap(size);
     bmsem = new Semaphore("bmsem",1);
-
     For(i,0,MAX_PROCESS){
 		pcb[i] = 0;
     }
@@ -41,20 +40,22 @@ PTable::~PTable()
 
 int PTable::ExecUpdate(char* name)
 {
-
 	bmsem->P();
+	
 	if(name == NULL)
 	{
 		printf("\nPTable::Exec : Can't not execute name is NULL.\n");
 		bmsem->V();
 		return -1;
 	}
+	
 	if( strcmp(name,"./test/scheduler") == 0 || strcmp(name,kernel->currentThread->getName()) == 0 )
 	{
 		printf("\nPTable::Exec : Can't not execute itself.\n");		
 		bmsem->V();
 		return -1;
 	}
+
 	int index = this->GetFreeSlot();
 	if(index < 0)
 	{
@@ -67,6 +68,7 @@ int PTable::ExecUpdate(char* name)
     	pcb[index]->parentID = kernel->currentThread->processID;
 	int pid = pcb[index]->Exec(name,index);
 	bmsem->V();
+	
 	return pid;
 }
 

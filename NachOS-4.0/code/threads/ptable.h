@@ -17,12 +17,12 @@ private:
 	Semaphore* bmsem;         
 
 public:
-     PTable(int = 10);          
+     PTable(int size = 10);          
     ~PTable();             
 		
-    int ExecUpdate(char*);      
-    int ExitUpdate(int);      
-    int JoinUpdate(int);     
+    int ExecUpdate(char* name);
+    int ExitUpdate(int ec);
+    int JoinUpdate(int id);  
 
     int GetFreeSlot();       
     bool IsExist(int pid);  

@@ -687,20 +687,18 @@ void handle_SC_SocketTCP_Close()
 	kernel->machine->WriteRegister(2, rVal);
 	return PCIncrease();
 }
-
+/// @brief /////////////////////////////////
 void handle_SC_EXEC(){
 	int vAddr;
 	vAddr = kernel -> machine -> ReadRegister(4);
 	char* name;
-	name = User2System(vAddr, MaxFileLength + 1);
-
+	name = User2System(vAddr, MaxFileLength);
 	if(name == NULL){
 		DEBUG('a', "\n Not enough memory in System");
 		printf("\n Not enough memory in System");
 		kernel -> machine -> WriteRegister(2, -1);
-		return;
+		return PCIncrease();
 	}
-
 	OpenFile * file1 = kernel -> fileSystem -> Open(name);
 	if(file1 == NULL){
 		printf("\nExec:: Can't open this file.");
@@ -709,11 +707,12 @@ void handle_SC_EXEC(){
 	}
 
 	delete file1;
-
 	int n = kernel -> pTab -> ExecUpdate(name);
 	kernel -> machine -> WriteRegister(2, n);
-
-	delete [] name;
+	
+    // DO NOT DELETE NAME, THE THEARD WILL DELETE IT LATER
+	//delete [] name;
+	
 	return PCIncrease();
 }
 
@@ -819,7 +818,7 @@ void handle_SC_Signal(){
 	return PCIncrease();
 }
 
-void handle_SC_EXEC1(){
+void handle_SC_EXECV(){
 	
 }
 
@@ -887,7 +886,7 @@ void ExceptionHandler(ExceptionType which)
 		case SC_Signal:
 			return handle_SC_Signal();
 		case SC_ExecV:
-			return handle_SC_EXEC1();
+			return handle_SC_EXECV();
 
 		default:
 			cerr << "Unexpected system call " << type << "\n";
