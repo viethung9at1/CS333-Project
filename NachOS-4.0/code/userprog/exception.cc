@@ -68,9 +68,9 @@ void handle_SC_Remove();
 // SOCKET
 void handle_SC_SocketTCP_Open();
 void handle_SC_SocketTCP_Connect();
-void handle_SC_SocketTCP_Send();
-void handle_SC_SocketTCP_Receive();
-void handle_SC_SocketTCP_Close();
+//void handle_SC_SocketTCP_Send();
+//void handle_SC_SocketTCP_Receive();
+//void handle_SC_SocketTCP_Close();
 
 
 // Input: - User space address (int)
@@ -132,7 +132,7 @@ void sysHalt() {
   SysHalt();
 }
 
-void sysAdd() {
+void handle_SC_Add() {
   DEBUG(dbgSys, "Add " << kernel->machine->ReadRegister(4) << " + " << kernel->machine->ReadRegister(5) << "\n");
 
   int result;
@@ -142,7 +142,7 @@ void sysAdd() {
   kernel->machine->WriteRegister(2, (int)result);
 }
 
-void sysCreate() {
+void handle_SC_Create() {
   int vAddr;
   char *filename;
   DEBUG(dbgFile, "\n SC_Create call ...");
@@ -171,7 +171,7 @@ void sysCreate() {
   delete[] filename;
 }
 
-void sysOpen() {
+void handle_SC_Open() {
   int vAddr;
   char *filename;
   DEBUG(dbgFile, "\n SC_Open call ...");
@@ -195,15 +195,15 @@ void sysOpen() {
       delete[] filename;
       return;
     }
-    returnId = file->getFileDescriptorID();
+    returnId = file -> getFileDescriptorID();
   } else if (type == 1) {
-    OpenFile *file = kernel->fileSystem->OpenReadOnly(filename);
+    OpenFile *file = kernel->fileSystem -> OpenReadOnly(filename);
     if (file == NULL) {
       kernel->machine->WriteRegister(2, -1);
       delete[] filename;
       return;
     }
-    returnId = file->getFileDescriptorID();
+    returnId = file -> getFileDescriptorID();
   } else {
     kernel->machine->WriteRegister(
         2, -1);
@@ -215,13 +215,13 @@ void sysOpen() {
   delete[] filename;
 }
 
-void sysClose() {
+void handle_SC_Close() {
   int IdFile = (int)kernel->machine->ReadRegister(4);
   int ret = kernel -> fileSystem -> CloseFile(IdFile);
   kernel->machine->WriteRegister(2, ret);
 }
 
-void syscallWrite() {
+void handle_SC_Write() {
   int vAddr = kernel->machine->ReadRegister(4);
   int demChar = kernel->machine->ReadRegister(5);
   char *buffer = User2System(vAddr, demChar);
@@ -234,7 +234,7 @@ void syscallWrite() {
   delete[] buffer;
 }
 
-void syscallRead() {
+void handle_SC_Read() {
   int vAddr = kernel->machine->ReadRegister(4);
   int demChar = kernel->machine->ReadRegister(5);
   int IdFile = kernel->machine->ReadRegister(6);
@@ -247,14 +247,14 @@ void syscallRead() {
   kernel->machine->WriteRegister(2, actualLen);
 }
 
-void syscallSeek() {
+void handle_SC_Seek() {
   int pos = kernel->machine->ReadRegister(4);
   int IdFile = kernel->machine->ReadRegister(5);
 
   kernel->machine->WriteRegister(2, SysSeek(pos, IdFile));
 }
 
-void syscallRemove() {
+void handle_SC_Remove() {
   int vAddr;
   char *filename;
   vAddr = kernel->machine->ReadRegister(4);
@@ -271,9 +271,9 @@ void syscallRemove() {
   kernel->machine->WriteRegister(2, SysRemove(filename));
 }
 
-void syscallSocket() { kernel->machine->WriteRegister(2, SysSocket()); }
+void handle_SC_SocketTCP_Open() { kernel->machine->WriteRegister(2, SysSocket()); }
 
-void syscallConnect() {
+void handle_SC_SocketTCP_Connect() {
   int socketId = kernel->machine->ReadRegister(4);
   int vAddr = kernel->machine->ReadRegister(5);
   char *ip = User2System(vAddr, MAX_LENGTH_IP_ADDRESS);
@@ -294,7 +294,7 @@ void SysExec() {
     kernel->machine->WriteRegister(2, -1); 
     return;
   }
-  OpenFile *executable = kernel->fileSystem->Open(filename);
+  OpenFile *executable = kernel -> fileSystem -> Open(filename);
   if (executable == NULL) {
     printf("Cannot open file\n");
     kernel->machine->WriteRegister(2, -1);
@@ -332,7 +332,7 @@ void sysCreateSemaphore() {
   }
 
   int sVal = kernel -> machine -> ReadRegister(5);
-  kernel->machine->WriteRegister(2, kernel -> sTable -> Create(name, sVal));
+  kernel -> machine -> WriteRegister(2, kernel -> sTable -> Create(name, sVal));
 }
 
 void sysSignal() {
@@ -342,11 +342,11 @@ void sysSignal() {
   if (name == NULL) {
     printf("\n Not enough memory in system");
     DEBUG(dbgFile, "\n Not enough memory in system");
-    kernel->machine->WriteRegister(2, -1);
+    kernel -> machine -> WriteRegister(2, -1);
     return;
   }
 
-  kernel->machine->WriteRegister(2, kernel->sTable->Signal(name));
+  kernel -> machine -> WriteRegister(2, kernel -> sTable -> Signal(name));
 }
 
 void sysWait() {
@@ -366,8 +366,8 @@ void sysWait() {
 
 
 void SysExecV() {
-  int argc = kernel->machine->ReadRegister(4);
-  int vAddr = kernel->machine->ReadRegister(5);
+  int argc = kernel -> machine -> ReadRegister(4);
+  int vAddr = kernel -> machine -> ReadRegister(5);
   
   char **argv = new char *[argc];
   
@@ -397,42 +397,42 @@ void ExceptionHandler(ExceptionType which) {
       break;
 
     case SC_Add:
-      sysAdd();
+      handle_SC_Add();
       return PCIncrease();
 
     case SC_Create:
-      sysCreate();
+      handle_SC_Create();
       return PCIncrease();
 
     case SC_Open:
-      sysOpen();
-      sysCreate();
+      handle_SC_Open();
+      handle_SC_Create();
       return PCIncrease();
 
     case SC_Close:
-      sysClose();
+      handle_SC_Close();
       return PCIncrease();
 
     case SC_Write:
-      syscallWrite();
+      handle_SC_Write();
       return PCIncrease();
     case SC_Read:
-      syscallRead();
+      handle_SC_Read();
       return PCIncrease();
     case SC_Seek:
-      syscallSeek();
+      handle_SC_Seek();
       return PCIncrease();
 
     case SC_Remove:
-      syscallRemove();
+      handle_SC_Remove();
       return PCIncrease();
 
     case SC_SocketTCP_Open:
-      syscallSocket();
+      handle_SC_SocketTCP_Open();
       return PCIncrease();
 
     case SC_SocketTCP_Connect:
-      syscallConnect();
+      handle_SC_SocketTCP_Connect();
       return PCIncrease();
 
     case SC_Exec:

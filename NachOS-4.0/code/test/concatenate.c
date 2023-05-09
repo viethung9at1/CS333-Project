@@ -38,6 +38,6 @@ int main() {
 
     Close(Id1);
     Close(Id2);
+    Exit(0);
 
-    Halt(); 
 } 

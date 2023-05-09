@@ -7,6 +7,7 @@ STable::STable() {
   }
 }
 
+
 STable::~STable() {
   delete bm;
   for (int i = 0; i < MAX_PROCESS; i++) {
@@ -15,14 +16,16 @@ STable::~STable() {
   }
 }
 
+
 int STable::Create(char *name, int init) {
   int id = FindFreeSlot();
-  if (id == -1) {
-    return -1;
-  }
+
+  if (id == -1) return -1;
+
   semTab[id] = new Sem(name, init);
   return id;
 }
+
 
 int STable::Wait(char *name) {
   for (int i = 0; i < MAX_PROCESS; i++) {
@@ -34,6 +37,7 @@ int STable::Wait(char *name) {
   return -1;
 }
 
+
 int STable::Signal(char *name) {
   for (int i = 0; i < MAX_PROCESS; i++) {
     if (semTab[i] != NULL && strcmp(semTab[i]->GetName(), name) == 0) {
@@ -44,4 +48,7 @@ int STable::Signal(char *name) {
   return -1;
 }
 
-int STable::FindFreeSlot() { return bm->FindAndSet(); }
+
+int STable::FindFreeSlot() { 
+  return bm->FindAndSet(); 
+}

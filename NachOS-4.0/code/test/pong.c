@@ -4,8 +4,9 @@ int main()
 {
 	
 	int i;
-	for(i =0; i< 10; i++)
+	for(i =0; i< 5; i++)
 	{
-		Write("B", 2, _ConsoleOutput);
+		Write("BB", 2, _ConsoleOutput);
     }
+	Exit(0);
 }

@@ -29,6 +29,6 @@ int main() {
     Read(content, len, fileId);
     
     Write(content, len, _ConsoleOutput);
+    Exit(0);
 
-    Halt(); 
 } 

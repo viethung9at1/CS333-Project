@@ -1,6 +1,14 @@
 #include "syscall.h" 
 #include "copyright.h" 
 
+void createfile(char* filename){
+    if (Create(filename) == -1) { 
+    // xuất thông báo lỗi tạo tập tin 
+    } 
+    else { 
+    // xuất thông báo tạo tập tin thành công 
+    }  
+}
 void _strcpy(char* dest, const char* src) {
     while (*src) {
         *dest++ = *src++;
@@ -16,6 +24,6 @@ int main() {
 
     Read(filename, MaxFileLength, _ConsoleInput);
     
-    Remove(filename);
+    createfile(filename);
     Exit(0);
 } 

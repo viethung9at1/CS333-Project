@@ -33,19 +33,6 @@ int PTable::ExecUpdate(char *name) {
   return pid;
 }
 
-int PTable::ExecUpdate(int argc, char **argv) {
-  bmsem->P();
-  int pid = bm->FindAndSet();
-  if (pid == -1) {
-    bmsem->V();
-    return -1;
-  }
-  pcb[pid] = new PCB(kernel->currentThread->pId, pid);
-  bmsem->V();
-  pcb[pid]->Exec(argc, argv);
-  return pid;
-}
-
 int PTable::JoinUpdate(int pid) {
   int parentID = kernel->currentThread->pId;
   int childID = pid;
@@ -60,20 +47,34 @@ int PTable::JoinUpdate(int pid) {
 
 int PTable::ExitUpdate(int ec) {
   int pid = kernel->currentThread->pId;
-  if (pid == 0) {
-    return -1;
-  }
+  if (pid == 0) return -1;
+
   pcb[pid]->SetExitCode(ec);
-  int parentID = pcb[pid]->parentID;
+  int parentID = pcb[pid] -> parentID;
+
   pcb[pid]->JoinRelease();
   pcb[parentID]->DecNumWait();
   pcb[parentID]->ExitWait();
   return 0;
 }
 
-char *PTable::GetFileName(int id) {
-  if (pcb[id] == NULL) {
-    return NULL;
+int PTable::ExecUpdate(int argc, char **argv) {
+  bmsem -> P();
+  int pid = bm -> FindAndSet();
+
+  if (pid == -1) {
+    bmsem->V();
+    return -1;
   }
-  return pcb[id]->GetFileName();
+
+  pcb[pid] = new PCB(kernel -> currentThread -> pId, pid);
+  bmsem->V();
+  pcb[pid] -> Exec(argc, argv);
+  return pid;
+}
+
+char *PTable::GetFileName(int id) {
+  if (pcb[id] == NULL) return NULL;
+
+  return pcb[id] -> GetFileName();
 }

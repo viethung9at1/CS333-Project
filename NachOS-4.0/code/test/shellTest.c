@@ -1,52 +1,30 @@
+
 #include "syscall.h"
-#include "copyright.h" 
 
-void intToStr(int num, char *str) {
-    
-    int len = 0;
-    int tmp = 0;
-    int i;
+int main()
+{
+    char str1[50], str2[50];
+    int write1, tem1, cnt;
+    SpaceId newProc1;
 
-    if (num == 0) {
-        *str++ = '0';
-        *str = '\0';
-        return;
-    }
+    CreateSemaphore("write_std",1);
 
-    if (num < 0) {
-        *str++ = '-';
-        num = -num;
-    }
+    while(1){
+        Wait("write_std");
 
-    tmp = num;
+        write1 = Read(str1,50,0);
+        if (str1[0] == 'q') ++cnt;
+        if (str1[1] == 'u') ++cnt;
+        if (str1[2] == 'i') ++cnt;
+        if (str1[3] == 't') ++cnt;
+        if (str1[4] == '\0') ++cnt;
 
-    while (tmp) {
-        len++;
-        tmp /= 10;
-    }
+        if(write1==-1 || cnt == 5){
+            break;
+        }
 
-    str[len] = '\0';
-
-    for ( i = len - 1; i >= 0; i--) {
-        str[i] = num % 10 + '0';
-        num /= 10;
+        Signal("write_std");
+        newProc1 = Exec(str1); // Project 01
+        tem1 =Join(newProc1);  
     }
 }
-
-
-int main() {
-  SpaceId a, b;
-  int aa, bb;
-  char str[40];
-  a = Exec("ping");
-  b = Exec("pong");
-  aa = Join(a);
-  bb = Join(b);
-  //Write("\n", 1, 1);
-  //intToStr(aa, str);
-  //Write(str, 32, 1);
-  //intToStr(bb, str);
-  //Write(str, 32, 1);
-  Exit(0);
-}
-

@@ -50,7 +50,6 @@ int PCB::Exec(int argc, char **argv)
   }
   this->filename = new char[strlen(argv[0]) + 1];
   strcpy(this->filename, argv[0]);
-  
 
   Thread *thread = new Thread(this->filename, this->pid);
   ProcessArg *arg = new ProcessArg(this->pid, argc, argv);
