@@ -217,7 +217,8 @@ CloseSocketTCP:
 	syscall
 	j 	$31
 	.end CloseSocketTCP
-	
+
+
 	.globl CreateSemaphore
 	.ent    CreateSemaphore
 CreateSemaphore:
@@ -234,7 +235,6 @@ Wait:
 	j 	$31
 	.end Wait
 
-	
 	.globl Signal
 	.ent    Signal
 Signal:
@@ -242,7 +242,6 @@ Signal:
 	syscall
 	j 	$31
 	.end Signal
-
 	
 /* dummy function to keep gcc happy */
         .globl  __main

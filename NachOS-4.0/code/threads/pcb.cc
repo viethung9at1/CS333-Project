@@ -1,120 +1,116 @@
-
-
 #include "pcb.h"
-#include "utility.h"
-#include "thread.h"
-#include "addrspace.h"
-#include"main.h"
 
-extern void StartProcess_2(int id);
-
-PCB::PCB(int id)
+PCB::PCB(int parentID, int pid)
 {
-    if (id == 0)
-        this->parentID = -1;
-    else
-        this->parentID = kernel->currentThread->processID;
-
-	this->numwait = this->exitcode = this->boolBG = 0;
-	this->thread = NULL;
-
-	this->joinsem = new Semaphore("joinsem",0);
-	this->exitsem = new Semaphore("exitsem",0);
-	this->multex = new Semaphore("multex",1);
+  joinsem = new Semaphore("joinsem", 0);
+  exitsem = new Semaphore("exitsem", 0);
+  multex = new Semaphore("multex", 1);
+  exitcode = 0;
+  numwait = 0;
+  filename = NULL;
+  this->parentID = parentID;
+  this->pid = pid;
+  this->isJoined = false;
 }
+
 PCB::~PCB()
 {
-	
-	if(joinsem != NULL)
-		delete this->joinsem;
-	if(exitsem != NULL)
-		delete this->exitsem;
-	if(multex != NULL)
-		delete this->multex;
-	if(thread != NULL)
-	{		
-		thread->FreeSpace();
-		thread->Finish();
-		
-	}
-}
-int PCB::GetID(){this->thread->processID; }
-int PCB::GetNumWait() { return this->numwait; }
-int PCB::GetExitCode() { return this->exitcode; }
-
-void PCB::SetExitCode(int ec){ this->exitcode = ec; }
-void PCB::JoinWait()
-{
-    joinsem->P();
+  delete joinsem;
+  delete exitsem;
+  delete multex;
+  if (filename != NULL)
+    delete[] filename;
 }
 
-void PCB::JoinRelease()
-{ 
-    joinsem->V();
-}
-void PCB::ExitWait()
-{ 
-    exitsem->P();
-}
-void PCB::ExitRelease() 
+int PCB::Exec(char *filename)
 {
-    exitsem->V();
+  multex->P();
+  if (this->filename != NULL)
+  {
+    multex->V();
+    return -1;
+  }
+  this->filename = new char[strlen(filename) + 1];
+  strcpy(this->filename, filename);
+
+  Thread *thread = new Thread(this->filename, this->pid);
+  ProcessArg *arg = new ProcessArg(this->pid, 0, NULL);
+  thread -> Fork(RunProcess, (void *)arg);
+  multex->V();
+  return 0;
 }
+
+int PCB::Exec(int argc, char **argv)
+{
+  multex->P();
+  if (this->filename != NULL)
+  {
+    multex->V();
+    return -1;
+  }
+  this->filename = new char[strlen(argv[0]) + 1];
+  strcpy(this->filename, argv[0]);
+  
+
+  Thread *thread = new Thread(this->filename, this->pid);
+  ProcessArg *arg = new ProcessArg(this->pid, argc, argv);
+  printf("%d\n", arg);
+  thread->Fork(RunProcess, (void *)arg);
+  multex->V();
+  return 0;
+}
+
+void RunProcess(void *arg)
+{
+  ProcessArg *_arg = (ProcessArg *)arg;
+  int pid = _arg->pid;
+  int argc = _arg->argc;
+  char **argv = _arg->argv;
+
+  char *filename = kernel->pTable->GetFileName(pid);
+  kernel->currentThread->space = new AddrSpace;
+  AddrSpace *space = kernel->currentThread->space;
+  if (!space->Load(filename, argc, argv)){
+    return;
+  }
+  space->Execute();
+  ASSERTNOTREACHED();
+}
+
+int PCB::GetNumWait() { return numwait; }
+
+void PCB::JoinWait() { joinsem->P(); }
+
+void PCB::ExitWait() { exitsem->P(); }
+
+void PCB::JoinRelease() { joinsem->V(); }
+
+void PCB::ExitRelease() { exitsem->V(); }
 
 void PCB::IncNumWait()
 {
-	multex->P();
-	++numwait;
-	multex->V();
+  multex->P();
+  numwait++;
+  multex->V();
 }
 
 void PCB::DecNumWait()
 {
-	multex->P();
-	if(numwait > 0)
-		--numwait;
-	multex->V();
+  multex->P();
+  numwait--;
+  multex->V();
 }
 
-void PCB::SetFileName(char* fn){ strcpy(FileName,fn);}
-char* PCB::GetFileName() { return this->FileName; }
+void PCB::SetExitCode(int ec) { exitcode = ec; }
 
-int PCB::Exec(char* filename, int id)
-{  
-	multex->P();          
-	this->thread = new Thread(filename);
+int PCB::GetExitCode() { return exitcode; }
 
-	if(this->thread == NULL){
-		printf("\nPCB::Exec:: Not enough memory..!\n");
-        	multex->V();
-		return -1;
-	}
-	this->thread->processID = id;
-	this->parentID = kernel->currentThread->processID;
-	this->thread->Fork((VoidFunctionPtr)StartProcess_2,(void*)id);
-    multex->V();
-	return id;
-
-}
-void StartProcess_2(int id)
+void PCB::SetFileName(char *fn)
 {
-    char* fileName = kernel->pTab->GetFileName(id);
-
-    AddrSpace *space;
-    space = new AddrSpace();
-
-	if(space == NULL)
-	{
-		printf("\nPCB::Exec : Can't create AddSpace.");
-		return;
-	}
-
-    kernel->currentThread->space = space;
-
-    space->InitRegisters();		
-    space->RestoreState();		
-
-    kernel->machine->Run();		
-    ASSERT(FALSE);		
+  if (filename != NULL)
+    delete[] filename;
+  filename = new char[strlen(fn) + 1];
+  strcpy(filename, fn);
 }
 
+char *PCB::GetFileName() { return filename; }
