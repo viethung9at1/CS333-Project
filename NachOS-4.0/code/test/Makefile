@@ -112,7 +112,7 @@ ifeq ($(hosttype),unknown)
 PROGRAMS = unknownhost
 else
 # change this if you create a new test program!
-PROGRAMS = add halt shell matmult sort segments createfile delete cat concatenate copy echoclient fileclient
+PROGRAMS = add halt shell matmult sort segments createfile delete cat concatenate copy echoclient fileclient ping pong execv shellPP multi_arg
 endif
 
 all: $(PROGRAMS)
@@ -198,6 +198,37 @@ fileclient.o: fileclient.c
 fileclient: fileclient.o start.o
 	$(LD) $(LDFLAGS) start.o fileclient.o -o fileclient.coff
 	$(COFF2NOFF) fileclient.coff fileclient
+
+pong.o: pong.c
+	$(CC) $(CFLAGS) -c pong.c
+pong: pong.o start.o
+	$(LD) $(LDFLAGS) start.o pong.o -o pong.coff
+	$(COFF2NOFF) pong.coff pong
+	
+ping.o: ping.c
+	$(CC) $(CFLAGS) -c ping.c
+ping: ping.o start.o
+	$(LD) $(LDFLAGS) start.o ping.o -o ping.coff
+	$(COFF2NOFF) ping.coff ping
+
+shellPP.o: shellPP.c
+	$(CC) $(CFLAGS) -c shellPP.c
+shellPP: shellPP.o start.o
+	$(LD) $(LDFLAGS) start.o shellPP.o -o shellPP.coff
+	$(COFF2NOFF) shellPP.coff shellPP
+
+multi_arg.o: multi_arg.c
+	$(CC) $(CFLAGS) -c multi_arg.c
+multi_arg: multi_arg.o start.o
+	$(LD) $(LDFLAGS) start.o multi_arg.o -o multi_arg.coff
+	$(COFF2NOFF) multi_arg.coff multi_arg
+
+execv.o: execv.c
+	$(CC) $(CFLAGS) -c execv.c
+execv: execv.o start.o
+	$(LD) $(LDFLAGS) start.o execv.o -o execv.coff
+	$(COFF2NOFF) execv.coff execv
+
 
 clean:
 	$(RM) -f *.o *.ii

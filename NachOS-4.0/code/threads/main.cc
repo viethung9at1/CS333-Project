@@ -41,8 +41,9 @@
 #include "copyright.h"
 #undef MAIN
 
-#include "main.h"
+#include "ProcessArg.h"
 #include "filesys.h"
+#include "main.h"
 #include "openfile.h"
 #include "sysdep.h"
 
@@ -56,8 +57,8 @@ Debug *debug;
 //----------------------------------------------------------------------
 
 static void Cleanup(int x) {
-    cerr << "\nCleaning up after signal " << x << "\n";
-    delete kernel;
+  cerr << "\nCleaning up after signal " << x << "\n";
+  delete kernel;
 }
 
 //-------------------------------------------------------------------
@@ -74,47 +75,47 @@ static const int TransferSize = 128;
 //----------------------------------------------------------------------
 
 static void Copy(char *from, char *to) {
-    int fd;
-    OpenFile *openFile;
-    int amountRead, fileLength;
-    char *buffer;
+  int fd;
+  OpenFile *openFile;
+  int amountRead, fileLength;
+  char *buffer;
 
-    // Open UNIX file
-    if ((fd = OpenForReadWrite(from, FALSE)) < 0) {
-        printf("Copy: couldn't open input file %s\n", from);
-        return;
-    }
+  // Open UNIX file
+  if ((fd = OpenForReadWrite(from, FALSE)) < 0) {
+    printf("Copy: couldn't open input file %s\n", from);
+    return;
+  }
 
-    // Figure out length of UNIX file
-    Lseek(fd, 0, 2);
-    fileLength = Tell(fd);
-    Lseek(fd, 0, 0);
+  // Figure out length of UNIX file
+  Lseek(fd, 0, 2);
+  fileLength = Tell(fd);
+  Lseek(fd, 0, 0);
 
-    // Create a Nachos file of the same length
-    DEBUG('f', "Copying file " << from << " of size " << fileLength
-                               << " to file " << to);
-    if (!kernel->fileSystem->Create(to, fileLength)) {  // Create Nachos file
-        printf("Copy: couldn't create output file %s\n", to);
-        Close(fd);
-        return;
-    }
-
-    openFile = kernel->fileSystem->Open(to);
-    ASSERT(openFile != NULL);
-
-    // Copy the data in TransferSize chunks
-    buffer = new char[TransferSize];
-    while ((amountRead = ReadPartial(fd, buffer, sizeof(char) * TransferSize)) >
-           0)
-        openFile->Write(buffer, amountRead);
-    delete[] buffer;
-
-    // Close the UNIX and the Nachos files
-    delete openFile;
+  // Create a Nachos file of the same length
+  DEBUG('f', "Copying file " << from << " of size " << fileLength << " to file "
+                             << to);
+  if (!kernel->fileSystem->Create(to, fileLength)) { // Create Nachos file
+    printf("Copy: couldn't create output file %s\n", to);
     Close(fd);
+    return;
+  }
+
+  openFile = kernel->fileSystem->Open(to);
+  ASSERT(openFile != NULL);
+
+  // Copy the data in TransferSize chunks
+  buffer = new char[TransferSize];
+  while ((amountRead = ReadPartial(fd, buffer, sizeof(char) * TransferSize)) >
+         0)
+    openFile->Write(buffer, amountRead);
+  delete[] buffer;
+
+  // Close the UNIX and the Nachos files
+  delete openFile;
+  Close(fd);
 }
 
-#endif  // FILESYS_STUB
+#endif // FILESYS_STUB
 
 //----------------------------------------------------------------------
 // Print
@@ -122,22 +123,23 @@ static void Copy(char *from, char *to) {
 //----------------------------------------------------------------------
 
 void Print(char *name) {
-    OpenFile *openFile;
-    int i, amountRead;
-    char *buffer;
+  OpenFile *openFile;
+  int i, amountRead;
+  char *buffer;
 
-    if ((openFile = kernel->fileSystem->Open(name)) == NULL) {
-        printf("Print: unable to open file %s\n", name);
-        return;
-    }
-
-    buffer = new char[TransferSize];
-    while ((amountRead = openFile->Read(buffer, TransferSize)) > 0)
-        for (i = 0; i < amountRead; i++) printf("%c", buffer[i]);
-    delete[] buffer;
-
-    delete openFile;  // close the Nachos file
+  if ((openFile = kernel->fileSystem->Open(name)) == NULL) {
+    printf("Print: unable to open file %s\n", name);
     return;
+  }
+
+  buffer = new char[TransferSize];
+  while ((amountRead = openFile->Read(buffer, TransferSize)) > 0)
+    for (i = 0; i < amountRead; i++)
+      printf("%c", buffer[i]);
+  delete[] buffer;
+
+  delete openFile; // close the Nachos file
+  return;
 }
 
 //----------------------------------------------------------------------
@@ -155,127 +157,143 @@ void Print(char *name) {
 //----------------------------------------------------------------------
 
 int main(int argc, char **argv) {
-    int i;
-    char *debugArg = "";
-    char *userProgName = NULL;  // default is not to execute a user prog
-    bool threadTestFlag = false;
-    bool consoleTestFlag = false;
-    bool networkTestFlag = false;
+  int i;
+  char *debugArg = "";
+  char *userProgName = NULL; // default is not to execute a user prog
+  bool threadTestFlag = false;
+  bool consoleTestFlag = false;
+  bool networkTestFlag = false;
 #ifndef FILESYS_STUB
-    char *copyUnixFileName = NULL;    // UNIX file to be copied into Nachos
-    char *copyNachosFileName = NULL;  // name of copied file in Nachos
-    char *printFileName = NULL;
-    char *removeFileName = NULL;
-    bool dirListFlag = false;
-    bool dumpFlag = false;
-#endif  // FILESYS_STUB
+  char *copyUnixFileName = NULL;   // UNIX file to be copied into Nachos
+  char *copyNachosFileName = NULL; // name of copied file in Nachos
+  char *printFileName = NULL;
+  char *removeFileName = NULL;
+  bool dirListFlag = false;
+  bool dumpFlag = false;
+#endif // FILESYS_STUB
 
-    // some command line arguments are handled here.
-    // those that set kernel parameters are handled in
-    // the Kernel constructor
-    for (i = 1; i < argc; i++) {
-        if (strcmp(argv[i], "-d") == 0) {
-            ASSERT(i + 1 < argc);  // next argument is debug string
-            debugArg = argv[i + 1];
-            i++;
-        } else if (strcmp(argv[i], "-z") == 0) {
-            cout << copyright << "\n";
-        } else if (strcmp(argv[i], "-x") == 0) {
-            ASSERT(i + 1 < argc);
-            userProgName = argv[i + 1];
-            i++;
-        } else if (strcmp(argv[i], "-K") == 0) {
-            threadTestFlag = TRUE;
-        } else if (strcmp(argv[i], "-C") == 0) {
-            consoleTestFlag = TRUE;
-        } else if (strcmp(argv[i], "-N") == 0) {
-            networkTestFlag = TRUE;
-        }
+  int c = 0;
+  char args[10][100];
+  ProcessArg arg = ProcessArg(0, argc, argv);
+  // some command line arguments are handled here.
+  // those that set kernel parameters are handled in
+  // the Kernel constructor
+  for (i = 1; i < argc; i++) {
+    if (strcmp(argv[i], "-d") == 0) {
+      ASSERT(i + 1 < argc); // next argument is debug string
+      debugArg = argv[i + 1];
+      i++;
+    } else if (strcmp(argv[i], "-z") == 0) {
+      cout << copyright << "\n";
+    } else if (strcmp(argv[i], "-x") == 0) {
+      ASSERT(i + 1 < argc);
+      userProgName = argv[i + 1];
+      strcpy(args[c++], argv[i + 1]);
+      i++;
+    } else if (strcmp(argv[i], "-K") == 0) {
+      threadTestFlag = TRUE;
+    } else if (strcmp(argv[i], "-C") == 0) {
+      consoleTestFlag = TRUE;
+    } else if (strcmp(argv[i], "-N") == 0) {
+      networkTestFlag = TRUE;
+    }
 #ifndef FILESYS_STUB
-        else if (strcmp(argv[i], "-cp") == 0) {
-            ASSERT(i + 2 < argc);
-            copyUnixFileName = argv[i + 1];
-            copyNachosFileName = argv[i + 2];
-            i += 2;
-        } else if (strcmp(argv[i], "-p") == 0) {
-            ASSERT(i + 1 < argc);
-            printFileName = argv[i + 1];
-            i++;
-        } else if (strcmp(argv[i], "-r") == 0) {
-            ASSERT(i + 1 < argc);
-            removeFileName = argv[i + 1];
-            i++;
-        } else if (strcmp(argv[i], "-l") == 0) {
-            dirListFlag = true;
-        } else if (strcmp(argv[i], "-D") == 0) {
-            dumpFlag = true;
-        }
-#endif  // FILESYS_STUB
-        else if (strcmp(argv[i], "-u") == 0) {
-            cout << "Partial usage: nachos [-z -d debugFlags]\n";
-            cout << "Partial usage: nachos [-x programName]\n";
-            cout << "Partial usage: nachos [-K] [-C] [-N]\n";
+    else if (strcmp(argv[i], "-cp") == 0) {
+      ASSERT(i + 2 < argc);
+      copyUnixFileName = argv[i + 1];
+      copyNachosFileName = argv[i + 2];
+      i += 2;
+    } else if (strcmp(argv[i], "-p") == 0) {
+      ASSERT(i + 1 < argc);
+      printFileName = argv[i + 1];
+      i++;
+    } else if (strcmp(argv[i], "-r") == 0) {
+      ASSERT(i + 1 < argc);
+      removeFileName = argv[i + 1];
+      i++;
+    } else if (strcmp(argv[i], "-l") == 0) {
+      dirListFlag = true;
+    } else if (strcmp(argv[i], "-D") == 0) {
+      dumpFlag = true;
+    }
+#endif // FILESYS_STUB
+    else if (strcmp(argv[i], "-u") == 0) {
+      cout << "Partial usage: nachos [-z -d debugFlags]\n";
+      cout << "Partial usage: nachos [-x programName]\n";
+      cout << "Partial usage: nachos [-K] [-C] [-N]\n";
 #ifndef FILESYS_STUB
-            cout << "Partial usage: nachos [-cp UnixFile NachosFile]\n";
-            cout << "Partial usage: nachos [-p fileName] [-r fileName]\n";
-            cout << "Partial usage: nachos [-l] [-D]\n";
-#endif  // FILESYS_STUB
-        }
+      cout << "Partial usage: nachos [-cp UnixFile NachosFile]\n";
+      cout << "Partial usage: nachos [-p fileName] [-r fileName]\n";
+      cout << "Partial usage: nachos [-l] [-D]\n";
+#endif // FILESYS_STUB
+    } else {
+      printf("User argument: %s\n", argv[i]);
+      strcpy(args[c++], argv[i]);
     }
-    debug = new Debug(debugArg);
+  }
 
-    DEBUG(dbgThread, "Entering main");
+  char **_args;
+  _args = new char *[c];
+  for (int i = 0; i < c; i++) {
+    _args[i] = new char[100];
+    strcpy(_args[i], args[i]);
+  }
+  debug = new Debug(debugArg);
 
-    kernel = new Kernel(argc, argv);
+  DEBUG(dbgThread, "Entering main");
 
-    kernel->Initialize(userProgName);
+  kernel = new Kernel(argc, argv);
 
-    CallOnUserAbort(Cleanup);  // if user hits ctl-C
+  kernel->Initialize();
 
-    // at this point, the kernel is ready to do something
-    // run some tests, if requested
-    if (threadTestFlag) {
-        kernel->ThreadSelfTest();  // test threads and synchronization
-    }
-    if (consoleTestFlag) {
-        kernel->ConsoleTest();  // interactive test of the synchronized console
-    }
-    if (networkTestFlag) {
-        kernel->NetworkTest();  // two-machine test of the network
-    }
+  CallOnUserAbort(Cleanup); // if user hits ctl-C
+
+  // at this point, the kernel is ready to do something
+  // run some tests, if requested
+  if (threadTestFlag) {
+    kernel->ThreadSelfTest(); // test threads and synchronization
+  }
+  if (consoleTestFlag) {
+    kernel->ConsoleTest(); // interactive test of the synchronized console
+  }
+  if (networkTestFlag) {
+    kernel->NetworkTest(); // two-machine test of the network
+  }
 
 #ifndef FILESYS_STUB
-    if (removeFileName != NULL) {
-        kernel->fileSystem->Remove(removeFileName);
-    }
-    if (copyUnixFileName != NULL && copyNachosFileName != NULL) {
-        Copy(copyUnixFileName, copyNachosFileName);
-    }
-    if (dumpFlag) {
-        kernel->fileSystem->Print();
-    }
-    if (dirListFlag) {
-        kernel->fileSystem->List();
-    }
-    if (printFileName != NULL) {
-        Print(printFileName);
-    }
-#endif  // FILESYS_STUB
+  if (removeFileName != NULL) {
+    kernel->fileSystem->Remove(removeFileName);
+  }
+  if (copyUnixFileName != NULL && copyNachosFileName != NULL) {
+    Copy(copyUnixFileName, copyNachosFileName);
+  }
+  if (dumpFlag) {
+    kernel->fileSystem->Print();
+  }
+  if (dirListFlag) {
+    kernel->fileSystem->List();
+  }
+  if (printFileName != NULL) {
+    Print(printFileName);
+  }
+#endif // FILESYS_STUB
 
-    // finally, run an initial user program if requested to do so
-    if (userProgName != NULL) {
-        AddrSpace *space =
-            new AddrSpace(userProgName);  // load the program into the space
-        ASSERT(space != (AddrSpace *)NULL);
-        space->Execute();    // run the program
-        ASSERTNOTREACHED();  // Execute never returns
+  // finally, run an initial user program if requested to do so
+  if (userProgName != NULL) {
+    AddrSpace *space = new AddrSpace;
+    ASSERT(space != (AddrSpace *)NULL);
+    if (space->Load(userProgName, c,
+                    _args)) { // load the program into the space
+      space->Execute();       // run the program
+      ASSERTNOTREACHED();     // Execute never returns
     }
+  }
 
-    // If we don't run a user program, we may get here.
-    // Calling "return" would terminate the program.
-    // Instead, call Halt, which will first clean up, then
-    //  terminate.
-    kernel->interrupt->Halt();
+  // If we don't run a user program, we may get here.
+  // Calling "return" would terminate the program.
+  // Instead, call Halt, which will first clean up, then
+  //  terminate.
+  kernel->interrupt->Halt();
 
-    ASSERTNOTREACHED();
+  ASSERTNOTREACHED();
 }
