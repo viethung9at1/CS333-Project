@@ -613,6 +613,58 @@ void handle_SC_SocketTCP_Close(){
 	kernel -> machine -> WriteRegister(2, rVal);
 	return PCIncrease();
 }
+/**
+ * @brief handle System Call Exec
+ * @param virtAddr: virtual address of user string name (get from R4)
+ * @return -1 if failed to Exec, otherwise return id of new process
+ * (write result to R2)
+ */
+void handle_SC_Exec() {
+    // Input: vi tri int
+    // Output: Fail return -1, Success: return id cua thread dang chay
+    // SpaceId Exec(char *name);
+    int virtAddr;
+    virtAddr = kernel->machine->ReadRegister(
+        4);  // doc dia chi ten chuong trinh tu thanh ghi r4
+    char* name;
+    name = User2System(virtAddr, 1024);  // Lay ten chuong trinh, nap vao kernel
+    if (name == NULL) {
+        DEBUG(dbgSys, "\n Not enough memory in System");
+        ASSERT(false);
+        kernel->machine->WriteRegister(2, -1);
+        return PCIncrease();
+    }
+
+    kernel->machine->WriteRegister(2, SysExec(name));
+    // DO NOT DELETE NAME, THE THEARD WILL DELETE IT LATER
+    // delete[] name;
+
+    return PCIncrease();
+}
+
+/**
+ * @brief handle System Call Join
+ * @param id: thread id (get from R4)
+ * @return -1 if failed to join, otherwise return exit code of
+ * the thread. (write result to R2)
+ */
+void handle_SC_Join() {
+    int id = kernel->machine->ReadRegister(4);
+    kernel->machine->WriteRegister(2, SysJoin(id));
+    return PCIncrease();
+}
+
+/**
+ * @brief handle System Call Exit
+ * @param id: thread id (get from R4)
+ * @return -1 if failed to exit, otherwise return exit code of
+ * the thread. (write result to R2)
+ */
+void handle_SC_Exit() {
+    int id = kernel->machine->ReadRegister(4);
+    kernel->machine->WriteRegister(2, SysExit(id));
+    return PCIncrease();
+}
 
 void
 ExceptionHandler(ExceptionType which)
@@ -660,7 +712,12 @@ ExceptionHandler(ExceptionType which)
 		return handle_SC_SocketTCP_Receive();
 	case SC_SocketTCP_Close:
 		return handle_SC_SocketTCP_Close();
-      
+      case SC_Exec:
+                    return handle_SC_Exec();
+                case SC_Join:
+                    return handle_SC_Join();
+                case SC_Exit:
+                    return handle_SC_Exit();
 	  
 	  
 	  default:

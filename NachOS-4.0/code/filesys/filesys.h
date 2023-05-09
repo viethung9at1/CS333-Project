@@ -195,6 +195,7 @@ class FileSystem {
 		fileSlot[socketid] == NULL;
 		return 0;
 	}
+	void Renew(int i){}
 };
 
 #else // FILESYS
