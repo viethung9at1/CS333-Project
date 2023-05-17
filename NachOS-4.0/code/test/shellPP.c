@@ -35,7 +35,8 @@ void intToStr(int num, char *str) {
 
 
 int main() {
-  int pidA, pidB, ecA, ecB;
+  SpaceId pidA, pidB;
+  int ecA, ecB;
   char str[40];
   pidA = Exec("ping");
   pidB = Exec("pong");

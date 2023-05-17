@@ -406,7 +406,6 @@ void ExceptionHandler(ExceptionType which) {
 
     case SC_Open:
       handle_SC_Open();
-      handle_SC_Create();
       return PCIncrease();
 
     case SC_Close:

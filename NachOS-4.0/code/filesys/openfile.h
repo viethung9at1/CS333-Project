@@ -142,6 +142,14 @@ class OpenFile {
 		}
 		ASSERTNOTREACHED();
 	}
+
+	int Seek(int position) {
+		if (isfile){
+			Lseek(file, position, 0);
+			currentOffset = Tell(file);
+		}
+		return currentOffset;
+	}
     
 	int getFileDescriptorID() { 
 		return fileDescriptorId; 
@@ -149,13 +157,6 @@ class OpenFile {
 
 	int getFileID() { 
 		return file; 
-	}
-	
-	void setOffset(int offset) { 
-		if (isfile) {
-			currentOffset = offset; 
-		}
-		ASSERTNOTREACHED();
 	}
 
 	char* getName() { 

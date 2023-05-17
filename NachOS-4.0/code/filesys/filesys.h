@@ -128,11 +128,10 @@ public:
 		if (file->isSocket()) return -1;
 		if (pos >= file->Length()) return -1;
 		if (pos >= 0) {
-			file->setOffset(pos);
+			file->Seek(pos);
 			return pos;
 		}
 		else if (pos == -1) {
-			file->setOffset(file->Length());
 			return file->Length();
 		}
 		return -1;
