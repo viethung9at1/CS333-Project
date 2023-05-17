@@ -33,6 +33,8 @@
 #include <sys/socket.h>
 #include <sys/un.h>
 #include <cerrno>
+#include <netinet/in.h>
+#include <arpa/inet.h>
 
 #ifdef SOLARIS
 // KMS
@@ -324,29 +326,11 @@ OpenForWrite(char *name)
 int
 OpenForReadWrite(char *name, bool crashOnError)
 {
-    int fd = open(name, O_RDWR|O_CREAT, 0777);
+    int fd = open(name, O_RDWR, 0);
 
     ASSERT(!crashOnError || fd >= 0);
     return fd;
 }
-
-//----------------------------------------------------------------------
-// OpenForRead
-// 	Open a file for reading only.
-//	Return the file descriptor, or error if it doesn't exist.
-//
-//	"name" -- file name
-//----------------------------------------------------------------------
-
-int
-OpenForReadOnly(char *name, bool crashOnError)
-{
-    int fd = open(name, O_RDONLY, 0);
-
-    ASSERT(!crashOnError || fd >= 0);
-    return fd;
-}
-
 
 //----------------------------------------------------------------------
 // Read
@@ -438,33 +422,58 @@ Unlink(char *name)
     return unlink(name);
 }
 
+
 //----------------------------------------------------------------------
 // OpenSocket
-// 	Open an interprocess communication (IPC) connection.  For now, 
-//	just open a datagram port where other Nachos (simulating 
+// 	Open an interprocess communication (IPC) connection.  For now,
+//	just open a datagram port where other Nachos (simulating
 //	workstations on a network) can send messages to this Nachos.
 //----------------------------------------------------------------------
+int OpenSocket() {
+  int sockID;
+  sockID = socket(AF_UNIX, SOCK_DGRAM, 0);
+  ASSERT(sockID >= 0);
+  return sockID;
+}
 
-int
-OpenSocket()
-{
-    int sockID;
-    
-    sockID = socket(AF_UNIX, SOCK_DGRAM, 0);
-    ASSERT(sockID >= 0);
+int OpenSocketInternet() {
+  int sockID = socket(AF_INET, SOCK_STREAM, 0);
+  ASSERT(sockID >= 0);
+  return sockID;
+}
 
-    return sockID;
+//----------------------------------------------------------------------
+// Connect
+// 	Connect to IP Port
+//----------------------------------------------------------------------
+
+int ConnectTCP(int socketId, char *ip, int port) {
+    struct sockaddr_in addr;
+    //cerr << socketId << ' ' << ip << ' ' << port << endl;
+    memset(&addr, '\0', sizeof(addr));
+    addr.sin_family = AF_INET;
+    addr.sin_port = port;
+    addr.sin_addr.s_addr = inet_addr(ip);
+
+    return connect(socketId, (struct sockaddr*)&addr, sizeof(addr));
 }
 
 //----------------------------------------------------------------------
 // CloseSocket
-// 	Close the IPC connection. 
+// 	Close the IPC connection.
 //----------------------------------------------------------------------
+void CloseSocket(int sockID) {
+  close(sockID);
+}
 
-void
-CloseSocket(int sockID)
-{
-    (void) close(sockID);
+int Send(int fd, char *buffer, int len) {
+    //cerr << "SEND " << buffer <<  ' ' << len << endl;
+  return send(fd, buffer, len, 0);
+}
+
+int Receive(int fd, char *buffer, int len) {
+    //cerr << "recv " << buffer <<  ' ' << len << endl;
+  return recv(fd, buffer, len, 0);
 }
 
 //----------------------------------------------------------------------

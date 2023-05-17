@@ -35,7 +35,7 @@ const int STACK_FENCEPOST = 0xdedbeef;
 
 Thread::Thread(char *threadName, int processID) {
   name = threadName;
-  this->pId = processID;
+  this->processID = processID;
   stackTop = NULL;
   stack = NULL;
   status = JUST_CREATED;
@@ -88,15 +88,22 @@ Thread::~Thread() {
 //	"arg" is a single argument to be passed to the procedure.
 //----------------------------------------------------------------------
 
-void Thread::Fork(VoidFunctionPtr func, void *arg) {
+void Thread::Fork(VoidFunctionPtr func, void *arg, bool isMyProcessArgs) {
   Interrupt *interrupt = kernel->interrupt;
   Scheduler *scheduler = kernel->scheduler;
   IntStatus oldLevel;
 
-  ProcessArg *_arg = (ProcessArg *)arg;
-  int pid = _arg->pid;
-  int argc = _arg->argc;
-  char **argv = _arg->argv;
+  // if (isMyProcessArgs) {
+  //   ProcessArg *_arg = (ProcessArg *)arg;
+  //   int argc = _arg->argc;
+  //   char **argv = _arg->argv;
+  //   printf("[Fork]\n");
+  //   printf("%d\n", arg);
+  //   printf("%d\n", argc);
+  //   for (int i = 0; i < argc; i++) {
+  //     printf("argv[%d]: %s\n", i, argv[i]);
+  //   }
+  // }
 
   DEBUG(dbgThread,
         "Forking thread: " << name << " f(a): " << (int)func << " " << arg);

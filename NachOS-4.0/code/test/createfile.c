@@ -25,5 +25,5 @@ int main() {
     Read(filename, MaxFileLength, _ConsoleInput);
     
     createfile(filename);
-    Exit(0);
+    Halt(); 
 } 

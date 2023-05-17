@@ -158,7 +158,7 @@ class Machine {
     
 
 
-    ExceptionType Translate(int vAddr, int* physAddr, int size,bool writing);
+    ExceptionType Translate(int virtAddr, int* physAddr, int size,bool writing);
     				// Translate an address, and check for 
 				// alignment.  Set the use and dirty bits in 
 				// the translation entry appropriately,

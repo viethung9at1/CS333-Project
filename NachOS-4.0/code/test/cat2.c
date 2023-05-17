@@ -14,21 +14,20 @@ void _strcpy(char* dest, const char* src) {
     *dest = '\0';
 }
 
-int main() { 
+int main(int argc, char **argv) { 
     int fileId, len;
     char sms[100];
     char* filename;
     char* content;
 
-    _strcpy(sms, "file name:");Write(sms, MaxFileLength, _ConsoleOutput);
-
-    Read(filename, MaxFileLength, _ConsoleInput);
+    if (argc != 2)
+        return -1;
     
-    fileId = Open(filename, 1);
+    fileId = Open(argv[1], 1);
     len = getlengthoffile(fileId);
     Read(content, len, fileId);
     
     Write(content, len, _ConsoleOutput);
 
-    Halt(); 
+    Exit(0);  
 } 

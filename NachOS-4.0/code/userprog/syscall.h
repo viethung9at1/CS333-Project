@@ -23,10 +23,8 @@
  */
 #define SC_Halt		0
 #define SC_Exit		1
-
 #define SC_Exec		2
 #define SC_Join		3
-
 #define SC_Create	4
 #define SC_Remove       5
 #define SC_Open		6
@@ -36,7 +34,6 @@
 #define SC_Close	10
 #define SC_ThreadFork	11
 #define SC_ThreadYield	12
-
 #define SC_ExecV	13
 #define SC_ThreadExit   14
 #define SC_ThreadJoin   15
@@ -47,9 +44,9 @@
 #define SC_SocketTCP_Receive 19
 #define SC_SocketTCP_Close 20
 
-#define SC_CreateSemaphore 24
-#define SC_Wait 25
-#define SC_Signal 26
+#define SC_Wait 21
+#define SC_Signal 22
+#define SC_CreateSemaphore 23
 
 #define SC_Add		42
 
@@ -104,10 +101,7 @@ SpaceId ExecV(int argc, char* argv[]);
  * Return the exit status.
  */
 int Join(SpaceId id); 	
-
- int CreateSemaphore(char* name, int semval);
- int Wait(char* name);
- int Signal(char* name);
+ 
 
 /* File system operations: Create, Remove, Open, Read, Write, Close
  * These functions are patterned after UNIX -- files represent
@@ -211,6 +205,13 @@ int Connect(int socketid, char* ip, int port);
 //int Send(int socketid, char *buffer, int len);
 //int Receive(int socketid, char *buffer, int len);
 int CloseSocketTCP(int socketid);
+
+// Multi programming
+
+int CreateSemaphore(char *name, int semval);
+int Wait(char *name);
+int Signal(char *name);
+
 
 #endif /* IN_ASM */
 

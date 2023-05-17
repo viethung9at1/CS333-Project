@@ -500,6 +500,9 @@ sysdep.o: ../lib/sysdep.cc /usr/include/stdc-predef.h ../lib/copyright.h \
  /usr/include/errno.h /usr/include/x86_64-linux-gnu/bits/errno.h \
  /usr/include/linux/errno.h /usr/include/x86_64-linux-gnu/asm/errno.h \
  /usr/include/asm-generic/errno.h /usr/include/asm-generic/errno-base.h \
+ /usr/include/netinet/in.h \
+ /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h \
+ /usr/include/x86_64-linux-gnu/bits/in.h /usr/include/arpa/inet.h \
  /usr/include/signal.h /usr/include/x86_64-linux-gnu/bits/signum.h \
  /usr/include/x86_64-linux-gnu/bits/signum-generic.h \
  /usr/include/x86_64-linux-gnu/bits/types/sig_atomic_t.h \
@@ -520,8 +523,8 @@ sysdep.o: ../lib/sysdep.cc /usr/include/stdc-predef.h ../lib/copyright.h \
  /usr/include/x86_64-linux-gnu/bits/types/struct_sigstack.h \
  /usr/include/x86_64-linux-gnu/bits/sigthread.h
 interrupt.o: ../machine/interrupt.cc /usr/include/stdc-predef.h \
- ../machine/interrupt.h ../lib/copyright.h ../lib/list.h ../lib/debug.h \
- ../lib/utility.h ../lib/sysdep.h /usr/include/c++/4.8/iostream \
+ ../userprog/addrspace.h ../lib/copyright.h ../filesys/filesys.h \
+ ../lib/sysdep.h /usr/include/c++/4.8/iostream \
  /usr/include/x86_64-linux-gnu/c++/4.8/bits/c++config.h \
  /usr/include/x86_64-linux-gnu/c++/4.8/bits/os_defines.h \
  /usr/include/features.h /usr/include/x86_64-linux-gnu/sys/cdefs.h \
@@ -633,27 +636,14 @@ interrupt.o: ../machine/interrupt.cc /usr/include/stdc-predef.h \
  /usr/include/x86_64-linux-gnu/bits/_G_config.h \
  /usr/include/x86_64-linux-gnu/bits/stdio_lim.h \
  /usr/include/x86_64-linux-gnu/bits/sys_errlist.h /usr/include/string.h \
- /usr/include/strings.h ../lib/list.cc ../machine/callback.h \
- ../threads/main.h ../threads/kernel.h ../threads/alarm.h \
- ../machine/timer.h ../filesys/filesys.h ../filesys/openfile.h \
- /usr/include/x86_64-linux-gnu/sys/socket.h \
- /usr/include/x86_64-linux-gnu/bits/types/struct_iovec.h \
- /usr/include/x86_64-linux-gnu/bits/socket.h \
- /usr/include/x86_64-linux-gnu/bits/socket_type.h \
- /usr/include/x86_64-linux-gnu/bits/sockaddr.h \
- /usr/include/x86_64-linux-gnu/asm/socket.h \
- /usr/include/asm-generic/socket.h \
- /usr/include/x86_64-linux-gnu/asm/sockios.h \
- /usr/include/asm-generic/sockios.h \
- /usr/include/x86_64-linux-gnu/bits/types/struct_osockaddr.h \
- /usr/include/netinet/in.h \
- /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h \
- /usr/include/x86_64-linux-gnu/bits/in.h /usr/include/arpa/inet.h \
+ /usr/include/strings.h ../filesys/openfile.h ../lib/utility.h \
  ../machine/machine.h ../machine/translate.h ../lib/bitmap.h \
- ../threads/ptable.h ../threads/pcb.h ../threads/ProcessArg.h \
- ../threads/synch.h ../threads/thread.h ../userprog/addrspace.h \
+ ../threads/main.h ../lib/debug.h ../threads/kernel.h ../threads/alarm.h \
+ ../machine/callback.h ../machine/timer.h ../machine/interrupt.h \
+ ../lib/list.h ../lib/list.cc ../threads/ptable.h ../threads/pcb.h \
+ ../threads/ProcessArg.h ../threads/synch.h ../threads/thread.h \
  ../threads/scheduler.h ../threads/stable.h ../threads/sem.h \
- ../machine/stats.h
+ ../machine/stats.h ../userprog/noff.h
 stats.o: ../machine/stats.cc /usr/include/stdc-predef.h \
  ../lib/copyright.h ../lib/debug.h ../lib/utility.h ../lib/sysdep.h \
  /usr/include/c++/4.8/iostream \
@@ -885,25 +875,12 @@ timer.o: ../machine/timer.cc /usr/include/stdc-predef.h \
  /usr/include/x86_64-linux-gnu/bits/stdio_lim.h \
  /usr/include/x86_64-linux-gnu/bits/sys_errlist.h /usr/include/string.h \
  /usr/include/strings.h ../threads/kernel.h ../threads/alarm.h \
- ../filesys/filesys.h ../filesys/openfile.h \
- /usr/include/x86_64-linux-gnu/sys/socket.h \
- /usr/include/x86_64-linux-gnu/bits/types/struct_iovec.h \
- /usr/include/x86_64-linux-gnu/bits/socket.h \
- /usr/include/x86_64-linux-gnu/bits/socket_type.h \
- /usr/include/x86_64-linux-gnu/bits/sockaddr.h \
- /usr/include/x86_64-linux-gnu/asm/socket.h \
- /usr/include/asm-generic/socket.h \
- /usr/include/x86_64-linux-gnu/asm/sockios.h \
- /usr/include/asm-generic/sockios.h \
- /usr/include/x86_64-linux-gnu/bits/types/struct_osockaddr.h \
- /usr/include/netinet/in.h \
- /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h \
- /usr/include/x86_64-linux-gnu/bits/in.h /usr/include/arpa/inet.h \
- ../machine/interrupt.h ../lib/list.h ../lib/list.cc ../machine/machine.h \
- ../machine/translate.h ../lib/bitmap.h ../threads/ptable.h \
- ../threads/pcb.h ../threads/ProcessArg.h ../threads/synch.h \
- ../threads/thread.h ../userprog/addrspace.h ../threads/scheduler.h \
- ../threads/stable.h ../threads/sem.h ../machine/stats.h
+ ../filesys/filesys.h ../filesys/openfile.h ../machine/interrupt.h \
+ ../lib/list.h ../lib/list.cc ../machine/machine.h ../machine/translate.h \
+ ../lib/bitmap.h ../threads/ptable.h ../threads/pcb.h \
+ ../threads/ProcessArg.h ../threads/synch.h ../threads/thread.h \
+ ../userprog/addrspace.h ../threads/scheduler.h ../threads/stable.h \
+ ../threads/sem.h ../machine/stats.h
 console.o: ../machine/console.cc /usr/include/stdc-predef.h \
  ../lib/copyright.h ../machine/console.h ../lib/utility.h \
  ../machine/callback.h ../threads/main.h ../lib/debug.h ../lib/sysdep.h \
@@ -1021,19 +998,6 @@ console.o: ../machine/console.cc /usr/include/stdc-predef.h \
  /usr/include/x86_64-linux-gnu/bits/sys_errlist.h /usr/include/string.h \
  /usr/include/strings.h ../threads/kernel.h ../threads/alarm.h \
  ../machine/timer.h ../filesys/filesys.h ../filesys/openfile.h \
- /usr/include/x86_64-linux-gnu/sys/socket.h \
- /usr/include/x86_64-linux-gnu/bits/types/struct_iovec.h \
- /usr/include/x86_64-linux-gnu/bits/socket.h \
- /usr/include/x86_64-linux-gnu/bits/socket_type.h \
- /usr/include/x86_64-linux-gnu/bits/sockaddr.h \
- /usr/include/x86_64-linux-gnu/asm/socket.h \
- /usr/include/asm-generic/socket.h \
- /usr/include/x86_64-linux-gnu/asm/sockios.h \
- /usr/include/asm-generic/sockios.h \
- /usr/include/x86_64-linux-gnu/bits/types/struct_osockaddr.h \
- /usr/include/netinet/in.h \
- /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h \
- /usr/include/x86_64-linux-gnu/bits/in.h /usr/include/arpa/inet.h \
  ../machine/interrupt.h ../lib/list.h ../lib/list.cc ../machine/machine.h \
  ../machine/translate.h ../lib/bitmap.h ../threads/ptable.h \
  ../threads/pcb.h ../threads/ProcessArg.h ../threads/synch.h \
@@ -1156,23 +1120,11 @@ machine.o: ../machine/machine.cc /usr/include/stdc-predef.h \
  /usr/include/x86_64-linux-gnu/bits/sys_errlist.h /usr/include/string.h \
  /usr/include/strings.h ../threads/kernel.h ../threads/alarm.h \
  ../machine/callback.h ../machine/timer.h ../filesys/filesys.h \
- ../filesys/openfile.h /usr/include/x86_64-linux-gnu/sys/socket.h \
- /usr/include/x86_64-linux-gnu/bits/types/struct_iovec.h \
- /usr/include/x86_64-linux-gnu/bits/socket.h \
- /usr/include/x86_64-linux-gnu/bits/socket_type.h \
- /usr/include/x86_64-linux-gnu/bits/sockaddr.h \
- /usr/include/x86_64-linux-gnu/asm/socket.h \
- /usr/include/asm-generic/socket.h \
- /usr/include/x86_64-linux-gnu/asm/sockios.h \
- /usr/include/asm-generic/sockios.h \
- /usr/include/x86_64-linux-gnu/bits/types/struct_osockaddr.h \
- /usr/include/netinet/in.h \
- /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h \
- /usr/include/x86_64-linux-gnu/bits/in.h /usr/include/arpa/inet.h \
- ../machine/interrupt.h ../lib/list.h ../lib/list.cc ../threads/ptable.h \
- ../threads/pcb.h ../threads/ProcessArg.h ../threads/synch.h \
- ../threads/thread.h ../userprog/addrspace.h ../threads/scheduler.h \
- ../threads/stable.h ../threads/sem.h ../machine/stats.h
+ ../filesys/openfile.h ../machine/interrupt.h ../lib/list.h \
+ ../lib/list.cc ../threads/ptable.h ../threads/pcb.h \
+ ../threads/ProcessArg.h ../threads/synch.h ../threads/thread.h \
+ ../userprog/addrspace.h ../threads/scheduler.h ../threads/stable.h \
+ ../threads/sem.h ../machine/stats.h
 mipssim.o: ../machine/mipssim.cc /usr/include/stdc-predef.h \
  ../lib/copyright.h ../lib/debug.h ../lib/utility.h ../lib/sysdep.h \
  /usr/include/c++/4.8/iostream \
@@ -1288,26 +1240,13 @@ mipssim.o: ../machine/mipssim.cc /usr/include/stdc-predef.h \
  /usr/include/x86_64-linux-gnu/bits/stdio_lim.h \
  /usr/include/x86_64-linux-gnu/bits/sys_errlist.h /usr/include/string.h \
  /usr/include/strings.h ../machine/machine.h ../machine/translate.h \
- ../lib/bitmap.h ../threads/main.h ../threads/kernel.h ../threads/alarm.h \
- ../machine/callback.h ../machine/timer.h ../filesys/filesys.h \
- ../filesys/openfile.h /usr/include/x86_64-linux-gnu/sys/socket.h \
- /usr/include/x86_64-linux-gnu/bits/types/struct_iovec.h \
- /usr/include/x86_64-linux-gnu/bits/socket.h \
- /usr/include/x86_64-linux-gnu/bits/socket_type.h \
- /usr/include/x86_64-linux-gnu/bits/sockaddr.h \
- /usr/include/x86_64-linux-gnu/asm/socket.h \
- /usr/include/asm-generic/socket.h \
- /usr/include/x86_64-linux-gnu/asm/sockios.h \
- /usr/include/asm-generic/sockios.h \
- /usr/include/x86_64-linux-gnu/bits/types/struct_osockaddr.h \
- /usr/include/netinet/in.h \
- /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h \
- /usr/include/x86_64-linux-gnu/bits/in.h /usr/include/arpa/inet.h \
+ ../lib/bitmap.h ../machine/mipssim.h ../threads/main.h \
+ ../threads/kernel.h ../threads/alarm.h ../machine/callback.h \
+ ../machine/timer.h ../filesys/filesys.h ../filesys/openfile.h \
  ../machine/interrupt.h ../lib/list.h ../lib/list.cc ../threads/ptable.h \
  ../threads/pcb.h ../threads/ProcessArg.h ../threads/synch.h \
  ../threads/thread.h ../userprog/addrspace.h ../threads/scheduler.h \
- ../threads/stable.h ../threads/sem.h ../machine/stats.h \
- ../machine/mipssim.h
+ ../threads/stable.h ../threads/sem.h ../machine/stats.h
 translate.o: ../machine/translate.cc /usr/include/stdc-predef.h \
  ../lib/copyright.h ../threads/main.h ../lib/debug.h ../lib/utility.h \
  ../lib/sysdep.h /usr/include/c++/4.8/iostream \
@@ -1424,24 +1363,12 @@ translate.o: ../machine/translate.cc /usr/include/stdc-predef.h \
  /usr/include/x86_64-linux-gnu/bits/sys_errlist.h /usr/include/string.h \
  /usr/include/strings.h ../threads/kernel.h ../threads/alarm.h \
  ../machine/callback.h ../machine/timer.h ../filesys/filesys.h \
- ../filesys/openfile.h /usr/include/x86_64-linux-gnu/sys/socket.h \
- /usr/include/x86_64-linux-gnu/bits/types/struct_iovec.h \
- /usr/include/x86_64-linux-gnu/bits/socket.h \
- /usr/include/x86_64-linux-gnu/bits/socket_type.h \
- /usr/include/x86_64-linux-gnu/bits/sockaddr.h \
- /usr/include/x86_64-linux-gnu/asm/socket.h \
- /usr/include/asm-generic/socket.h \
- /usr/include/x86_64-linux-gnu/asm/sockios.h \
- /usr/include/asm-generic/sockios.h \
- /usr/include/x86_64-linux-gnu/bits/types/struct_osockaddr.h \
- /usr/include/netinet/in.h \
- /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h \
- /usr/include/x86_64-linux-gnu/bits/in.h /usr/include/arpa/inet.h \
- ../machine/interrupt.h ../lib/list.h ../lib/list.cc ../machine/machine.h \
- ../machine/translate.h ../lib/bitmap.h ../threads/ptable.h \
- ../threads/pcb.h ../threads/ProcessArg.h ../threads/synch.h \
- ../threads/thread.h ../userprog/addrspace.h ../threads/scheduler.h \
- ../threads/stable.h ../threads/sem.h ../machine/stats.h
+ ../filesys/openfile.h ../machine/interrupt.h ../lib/list.h \
+ ../lib/list.cc ../machine/machine.h ../machine/translate.h \
+ ../lib/bitmap.h ../threads/ptable.h ../threads/pcb.h \
+ ../threads/ProcessArg.h ../threads/synch.h ../threads/thread.h \
+ ../userprog/addrspace.h ../threads/scheduler.h ../threads/stable.h \
+ ../threads/sem.h ../machine/stats.h
 network.o: ../machine/network.cc /usr/include/stdc-predef.h \
  ../lib/copyright.h ../machine/network.h ../lib/utility.h \
  ../machine/callback.h ../threads/main.h ../lib/debug.h ../lib/sysdep.h \
@@ -1559,19 +1486,6 @@ network.o: ../machine/network.cc /usr/include/stdc-predef.h \
  /usr/include/x86_64-linux-gnu/bits/sys_errlist.h /usr/include/string.h \
  /usr/include/strings.h ../threads/kernel.h ../threads/alarm.h \
  ../machine/timer.h ../filesys/filesys.h ../filesys/openfile.h \
- /usr/include/x86_64-linux-gnu/sys/socket.h \
- /usr/include/x86_64-linux-gnu/bits/types/struct_iovec.h \
- /usr/include/x86_64-linux-gnu/bits/socket.h \
- /usr/include/x86_64-linux-gnu/bits/socket_type.h \
- /usr/include/x86_64-linux-gnu/bits/sockaddr.h \
- /usr/include/x86_64-linux-gnu/asm/socket.h \
- /usr/include/asm-generic/socket.h \
- /usr/include/x86_64-linux-gnu/asm/sockios.h \
- /usr/include/asm-generic/sockios.h \
- /usr/include/x86_64-linux-gnu/bits/types/struct_osockaddr.h \
- /usr/include/netinet/in.h \
- /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h \
- /usr/include/x86_64-linux-gnu/bits/in.h /usr/include/arpa/inet.h \
  ../machine/interrupt.h ../lib/list.h ../lib/list.cc ../machine/machine.h \
  ../machine/translate.h ../lib/bitmap.h ../threads/ptable.h \
  ../threads/pcb.h ../threads/ProcessArg.h ../threads/synch.h \
@@ -1693,24 +1607,12 @@ disk.o: ../machine/disk.cc /usr/include/stdc-predef.h ../lib/copyright.h \
  /usr/include/x86_64-linux-gnu/bits/sys_errlist.h /usr/include/string.h \
  /usr/include/strings.h ../threads/main.h ../threads/kernel.h \
  ../threads/alarm.h ../machine/timer.h ../filesys/filesys.h \
- ../filesys/openfile.h /usr/include/x86_64-linux-gnu/sys/socket.h \
- /usr/include/x86_64-linux-gnu/bits/types/struct_iovec.h \
- /usr/include/x86_64-linux-gnu/bits/socket.h \
- /usr/include/x86_64-linux-gnu/bits/socket_type.h \
- /usr/include/x86_64-linux-gnu/bits/sockaddr.h \
- /usr/include/x86_64-linux-gnu/asm/socket.h \
- /usr/include/asm-generic/socket.h \
- /usr/include/x86_64-linux-gnu/asm/sockios.h \
- /usr/include/asm-generic/sockios.h \
- /usr/include/x86_64-linux-gnu/bits/types/struct_osockaddr.h \
- /usr/include/netinet/in.h \
- /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h \
- /usr/include/x86_64-linux-gnu/bits/in.h /usr/include/arpa/inet.h \
- ../machine/interrupt.h ../lib/list.h ../lib/list.cc ../machine/machine.h \
- ../machine/translate.h ../lib/bitmap.h ../threads/ptable.h \
- ../threads/pcb.h ../threads/ProcessArg.h ../threads/synch.h \
- ../threads/thread.h ../userprog/addrspace.h ../threads/scheduler.h \
- ../threads/stable.h ../threads/sem.h ../machine/stats.h
+ ../filesys/openfile.h ../machine/interrupt.h ../lib/list.h \
+ ../lib/list.cc ../machine/machine.h ../machine/translate.h \
+ ../lib/bitmap.h ../threads/ptable.h ../threads/pcb.h \
+ ../threads/ProcessArg.h ../threads/synch.h ../threads/thread.h \
+ ../userprog/addrspace.h ../threads/scheduler.h ../threads/stable.h \
+ ../threads/sem.h ../machine/stats.h
 alarm.o: ../threads/alarm.cc /usr/include/stdc-predef.h \
  ../lib/copyright.h ../threads/alarm.h ../lib/utility.h \
  ../machine/callback.h ../machine/timer.h ../threads/main.h \
@@ -1827,24 +1729,12 @@ alarm.o: ../threads/alarm.cc /usr/include/stdc-predef.h \
  /usr/include/x86_64-linux-gnu/bits/stdio_lim.h \
  /usr/include/x86_64-linux-gnu/bits/sys_errlist.h /usr/include/string.h \
  /usr/include/strings.h ../threads/kernel.h ../filesys/filesys.h \
- ../filesys/openfile.h /usr/include/x86_64-linux-gnu/sys/socket.h \
- /usr/include/x86_64-linux-gnu/bits/types/struct_iovec.h \
- /usr/include/x86_64-linux-gnu/bits/socket.h \
- /usr/include/x86_64-linux-gnu/bits/socket_type.h \
- /usr/include/x86_64-linux-gnu/bits/sockaddr.h \
- /usr/include/x86_64-linux-gnu/asm/socket.h \
- /usr/include/asm-generic/socket.h \
- /usr/include/x86_64-linux-gnu/asm/sockios.h \
- /usr/include/asm-generic/sockios.h \
- /usr/include/x86_64-linux-gnu/bits/types/struct_osockaddr.h \
- /usr/include/netinet/in.h \
- /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h \
- /usr/include/x86_64-linux-gnu/bits/in.h /usr/include/arpa/inet.h \
- ../machine/interrupt.h ../lib/list.h ../lib/list.cc ../machine/machine.h \
- ../machine/translate.h ../lib/bitmap.h ../threads/ptable.h \
- ../threads/pcb.h ../threads/ProcessArg.h ../threads/synch.h \
- ../threads/thread.h ../userprog/addrspace.h ../threads/scheduler.h \
- ../threads/stable.h ../threads/sem.h ../machine/stats.h
+ ../filesys/openfile.h ../machine/interrupt.h ../lib/list.h \
+ ../lib/list.cc ../machine/machine.h ../machine/translate.h \
+ ../lib/bitmap.h ../threads/ptable.h ../threads/pcb.h \
+ ../threads/ProcessArg.h ../threads/synch.h ../threads/thread.h \
+ ../userprog/addrspace.h ../threads/scheduler.h ../threads/stable.h \
+ ../threads/sem.h ../machine/stats.h
 kernel.o: ../threads/kernel.cc /usr/include/stdc-predef.h \
  ../threads/kernel.h ../threads/alarm.h ../lib/copyright.h \
  ../lib/utility.h ../machine/callback.h ../machine/timer.h ../lib/debug.h \
@@ -1961,19 +1851,6 @@ kernel.o: ../threads/kernel.cc /usr/include/stdc-predef.h \
  /usr/include/x86_64-linux-gnu/bits/stdio_lim.h \
  /usr/include/x86_64-linux-gnu/bits/sys_errlist.h /usr/include/string.h \
  /usr/include/strings.h ../filesys/filesys.h ../filesys/openfile.h \
- /usr/include/x86_64-linux-gnu/sys/socket.h \
- /usr/include/x86_64-linux-gnu/bits/types/struct_iovec.h \
- /usr/include/x86_64-linux-gnu/bits/socket.h \
- /usr/include/x86_64-linux-gnu/bits/socket_type.h \
- /usr/include/x86_64-linux-gnu/bits/sockaddr.h \
- /usr/include/x86_64-linux-gnu/asm/socket.h \
- /usr/include/asm-generic/socket.h \
- /usr/include/x86_64-linux-gnu/asm/sockios.h \
- /usr/include/asm-generic/sockios.h \
- /usr/include/x86_64-linux-gnu/bits/types/struct_osockaddr.h \
- /usr/include/netinet/in.h \
- /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h \
- /usr/include/x86_64-linux-gnu/bits/in.h /usr/include/arpa/inet.h \
  ../machine/interrupt.h ../lib/list.h ../lib/list.cc ../machine/machine.h \
  ../machine/translate.h ../lib/bitmap.h ../threads/ptable.h \
  ../threads/main.h ../threads/pcb.h ../threads/ProcessArg.h \
@@ -2098,20 +1975,7 @@ main.o: ../threads/main.cc /usr/include/stdc-predef.h ../lib/copyright.h \
  /usr/include/x86_64-linux-gnu/bits/stdio_lim.h \
  /usr/include/x86_64-linux-gnu/bits/sys_errlist.h /usr/include/string.h \
  /usr/include/strings.h ../filesys/openfile.h ../lib/utility.h \
- /usr/include/x86_64-linux-gnu/sys/socket.h \
- /usr/include/x86_64-linux-gnu/bits/types/struct_iovec.h \
- /usr/include/x86_64-linux-gnu/bits/socket.h \
- /usr/include/x86_64-linux-gnu/bits/socket_type.h \
- /usr/include/x86_64-linux-gnu/bits/sockaddr.h \
- /usr/include/x86_64-linux-gnu/asm/socket.h \
- /usr/include/asm-generic/socket.h \
- /usr/include/x86_64-linux-gnu/asm/sockios.h \
- /usr/include/asm-generic/sockios.h \
- /usr/include/x86_64-linux-gnu/bits/types/struct_osockaddr.h \
- /usr/include/netinet/in.h \
- /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h \
- /usr/include/x86_64-linux-gnu/bits/in.h /usr/include/arpa/inet.h \
- ../lib/debug.h ../threads/main.h ../threads/kernel.h ../threads/alarm.h \
+ ../threads/main.h ../lib/debug.h ../threads/kernel.h ../threads/alarm.h \
  ../machine/callback.h ../machine/timer.h ../machine/interrupt.h \
  ../lib/list.h ../lib/list.cc ../machine/machine.h ../machine/translate.h \
  ../lib/bitmap.h ../threads/ptable.h ../threads/pcb.h ../threads/synch.h \
@@ -2233,26 +2097,12 @@ scheduler.o: ../threads/scheduler.cc /usr/include/stdc-predef.h \
  /usr/include/x86_64-linux-gnu/bits/sys_errlist.h /usr/include/string.h \
  /usr/include/strings.h ../threads/scheduler.h ../lib/list.h \
  ../lib/list.cc ../threads/thread.h ../userprog/addrspace.h \
- ../filesys/filesys.h ../filesys/openfile.h \
- /usr/include/x86_64-linux-gnu/sys/socket.h \
- /usr/include/x86_64-linux-gnu/bits/types/struct_iovec.h \
- /usr/include/x86_64-linux-gnu/bits/socket.h \
- /usr/include/x86_64-linux-gnu/bits/socket_type.h \
- /usr/include/x86_64-linux-gnu/bits/sockaddr.h \
- /usr/include/x86_64-linux-gnu/asm/socket.h \
- /usr/include/asm-generic/socket.h \
- /usr/include/x86_64-linux-gnu/asm/sockios.h \
- /usr/include/asm-generic/sockios.h \
- /usr/include/x86_64-linux-gnu/bits/types/struct_osockaddr.h \
- /usr/include/netinet/in.h \
- /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h \
- /usr/include/x86_64-linux-gnu/bits/in.h /usr/include/arpa/inet.h \
- ../machine/machine.h ../machine/translate.h ../lib/bitmap.h \
- ../threads/ProcessArg.h ../threads/main.h ../threads/kernel.h \
- ../threads/alarm.h ../machine/callback.h ../machine/timer.h \
- ../machine/interrupt.h ../threads/ptable.h ../threads/pcb.h \
- ../threads/synch.h ../threads/stable.h ../threads/sem.h \
- ../machine/stats.h
+ ../filesys/filesys.h ../filesys/openfile.h ../machine/machine.h \
+ ../machine/translate.h ../lib/bitmap.h ../threads/ProcessArg.h \
+ ../threads/main.h ../threads/kernel.h ../threads/alarm.h \
+ ../machine/callback.h ../machine/timer.h ../machine/interrupt.h \
+ ../threads/ptable.h ../threads/pcb.h ../threads/synch.h \
+ ../threads/stable.h ../threads/sem.h ../machine/stats.h
 synch.o: ../threads/synch.cc /usr/include/stdc-predef.h \
  ../threads/synch.h ../lib/copyright.h ../lib/list.h ../lib/debug.h \
  ../lib/utility.h ../lib/sysdep.h /usr/include/c++/4.8/iostream \
@@ -2370,19 +2220,6 @@ synch.o: ../threads/synch.cc /usr/include/stdc-predef.h \
  /usr/include/strings.h ../lib/list.cc ../threads/main.h \
  ../threads/kernel.h ../threads/alarm.h ../machine/callback.h \
  ../machine/timer.h ../filesys/filesys.h ../filesys/openfile.h \
- /usr/include/x86_64-linux-gnu/sys/socket.h \
- /usr/include/x86_64-linux-gnu/bits/types/struct_iovec.h \
- /usr/include/x86_64-linux-gnu/bits/socket.h \
- /usr/include/x86_64-linux-gnu/bits/socket_type.h \
- /usr/include/x86_64-linux-gnu/bits/sockaddr.h \
- /usr/include/x86_64-linux-gnu/asm/socket.h \
- /usr/include/asm-generic/socket.h \
- /usr/include/x86_64-linux-gnu/asm/sockios.h \
- /usr/include/asm-generic/sockios.h \
- /usr/include/x86_64-linux-gnu/bits/types/struct_osockaddr.h \
- /usr/include/netinet/in.h \
- /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h \
- /usr/include/x86_64-linux-gnu/bits/in.h /usr/include/arpa/inet.h \
  ../machine/interrupt.h ../machine/machine.h ../machine/translate.h \
  ../lib/bitmap.h ../threads/ptable.h ../threads/pcb.h \
  ../threads/ProcessArg.h ../threads/scheduler.h ../threads/thread.h \
@@ -2505,24 +2342,11 @@ synchlist.o: ../threads/synchlist.cc /usr/include/stdc-predef.h \
  /usr/include/strings.h ../lib/list.cc ../threads/synch.h \
  ../threads/main.h ../threads/kernel.h ../threads/alarm.h \
  ../machine/callback.h ../machine/timer.h ../filesys/filesys.h \
- ../filesys/openfile.h /usr/include/x86_64-linux-gnu/sys/socket.h \
- /usr/include/x86_64-linux-gnu/bits/types/struct_iovec.h \
- /usr/include/x86_64-linux-gnu/bits/socket.h \
- /usr/include/x86_64-linux-gnu/bits/socket_type.h \
- /usr/include/x86_64-linux-gnu/bits/sockaddr.h \
- /usr/include/x86_64-linux-gnu/asm/socket.h \
- /usr/include/asm-generic/socket.h \
- /usr/include/x86_64-linux-gnu/asm/sockios.h \
- /usr/include/asm-generic/sockios.h \
- /usr/include/x86_64-linux-gnu/bits/types/struct_osockaddr.h \
- /usr/include/netinet/in.h \
- /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h \
- /usr/include/x86_64-linux-gnu/bits/in.h /usr/include/arpa/inet.h \
- ../machine/interrupt.h ../machine/machine.h ../machine/translate.h \
- ../lib/bitmap.h ../threads/ptable.h ../threads/pcb.h \
- ../threads/ProcessArg.h ../threads/scheduler.h ../threads/thread.h \
- ../userprog/addrspace.h ../threads/stable.h ../threads/sem.h \
- ../machine/stats.h ../threads/synchlist.cc
+ ../filesys/openfile.h ../machine/interrupt.h ../machine/machine.h \
+ ../machine/translate.h ../lib/bitmap.h ../threads/ptable.h \
+ ../threads/pcb.h ../threads/ProcessArg.h ../threads/scheduler.h \
+ ../threads/thread.h ../userprog/addrspace.h ../threads/stable.h \
+ ../threads/sem.h ../machine/stats.h ../threads/synchlist.cc
 thread.o: ../threads/thread.cc /usr/include/stdc-predef.h \
  ../threads/thread.h ../lib/copyright.h ../lib/sysdep.h \
  /usr/include/c++/4.8/iostream \
@@ -2638,27 +2462,13 @@ thread.o: ../threads/thread.cc /usr/include/stdc-predef.h \
  /usr/include/x86_64-linux-gnu/bits/stdio_lim.h \
  /usr/include/x86_64-linux-gnu/bits/sys_errlist.h /usr/include/string.h \
  /usr/include/strings.h ../lib/utility.h ../userprog/addrspace.h \
- ../filesys/filesys.h ../filesys/openfile.h \
- /usr/include/x86_64-linux-gnu/sys/socket.h \
- /usr/include/x86_64-linux-gnu/bits/types/struct_iovec.h \
- /usr/include/x86_64-linux-gnu/bits/socket.h \
- /usr/include/x86_64-linux-gnu/bits/socket_type.h \
- /usr/include/x86_64-linux-gnu/bits/sockaddr.h \
- /usr/include/x86_64-linux-gnu/asm/socket.h \
- /usr/include/asm-generic/socket.h \
- /usr/include/x86_64-linux-gnu/asm/sockios.h \
- /usr/include/asm-generic/sockios.h \
- /usr/include/x86_64-linux-gnu/bits/types/struct_osockaddr.h \
- /usr/include/netinet/in.h \
- /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h \
- /usr/include/x86_64-linux-gnu/bits/in.h /usr/include/arpa/inet.h \
- ../lib/debug.h ../machine/machine.h ../machine/translate.h \
- ../lib/bitmap.h ../threads/ProcessArg.h ../threads/switch.h \
- ../threads/synch.h ../lib/list.h ../lib/list.cc ../threads/main.h \
- ../threads/kernel.h ../threads/alarm.h ../machine/callback.h \
- ../machine/timer.h ../machine/interrupt.h ../threads/ptable.h \
- ../threads/pcb.h ../threads/scheduler.h ../threads/stable.h \
- ../threads/sem.h ../machine/stats.h
+ ../filesys/filesys.h ../filesys/openfile.h ../machine/machine.h \
+ ../machine/translate.h ../lib/bitmap.h ../threads/ProcessArg.h \
+ ../threads/switch.h ../threads/synch.h ../lib/list.h ../lib/debug.h \
+ ../lib/list.cc ../threads/main.h ../threads/kernel.h ../threads/alarm.h \
+ ../machine/callback.h ../machine/timer.h ../machine/interrupt.h \
+ ../threads/ptable.h ../threads/pcb.h ../threads/scheduler.h \
+ ../threads/stable.h ../threads/sem.h ../machine/stats.h
 pcb.o: ../threads/pcb.cc /usr/include/stdc-predef.h ../threads/pcb.h \
  ../threads/ProcessArg.h ../threads/main.h ../lib/copyright.h \
  ../lib/debug.h ../lib/utility.h ../lib/sysdep.h \
@@ -2776,24 +2586,11 @@ pcb.o: ../threads/pcb.cc /usr/include/stdc-predef.h ../threads/pcb.h \
  /usr/include/x86_64-linux-gnu/bits/sys_errlist.h /usr/include/string.h \
  /usr/include/strings.h ../threads/kernel.h ../threads/alarm.h \
  ../machine/callback.h ../machine/timer.h ../filesys/filesys.h \
- ../filesys/openfile.h /usr/include/x86_64-linux-gnu/sys/socket.h \
- /usr/include/x86_64-linux-gnu/bits/types/struct_iovec.h \
- /usr/include/x86_64-linux-gnu/bits/socket.h \
- /usr/include/x86_64-linux-gnu/bits/socket_type.h \
- /usr/include/x86_64-linux-gnu/bits/sockaddr.h \
- /usr/include/x86_64-linux-gnu/asm/socket.h \
- /usr/include/asm-generic/socket.h \
- /usr/include/x86_64-linux-gnu/asm/sockios.h \
- /usr/include/asm-generic/sockios.h \
- /usr/include/x86_64-linux-gnu/bits/types/struct_osockaddr.h \
- /usr/include/netinet/in.h \
- /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h \
- /usr/include/x86_64-linux-gnu/bits/in.h /usr/include/arpa/inet.h \
- ../machine/interrupt.h ../lib/list.h ../lib/list.cc ../machine/machine.h \
- ../machine/translate.h ../lib/bitmap.h ../threads/ptable.h \
- ../threads/synch.h ../threads/thread.h ../userprog/addrspace.h \
- ../threads/scheduler.h ../threads/stable.h ../threads/sem.h \
- ../machine/stats.h
+ ../filesys/openfile.h ../machine/interrupt.h ../lib/list.h \
+ ../lib/list.cc ../machine/machine.h ../machine/translate.h \
+ ../lib/bitmap.h ../threads/ptable.h ../threads/synch.h \
+ ../threads/thread.h ../userprog/addrspace.h ../threads/scheduler.h \
+ ../threads/stable.h ../threads/sem.h ../machine/stats.h
 ptable.o: ../threads/ptable.cc /usr/include/stdc-predef.h \
  ../threads/ptable.h ../threads/main.h ../lib/copyright.h ../lib/debug.h \
  ../lib/utility.h ../lib/sysdep.h /usr/include/c++/4.8/iostream \
@@ -2910,24 +2707,11 @@ ptable.o: ../threads/ptable.cc /usr/include/stdc-predef.h \
  /usr/include/x86_64-linux-gnu/bits/sys_errlist.h /usr/include/string.h \
  /usr/include/strings.h ../threads/kernel.h ../threads/alarm.h \
  ../machine/callback.h ../machine/timer.h ../filesys/filesys.h \
- ../filesys/openfile.h /usr/include/x86_64-linux-gnu/sys/socket.h \
- /usr/include/x86_64-linux-gnu/bits/types/struct_iovec.h \
- /usr/include/x86_64-linux-gnu/bits/socket.h \
- /usr/include/x86_64-linux-gnu/bits/socket_type.h \
- /usr/include/x86_64-linux-gnu/bits/sockaddr.h \
- /usr/include/x86_64-linux-gnu/asm/socket.h \
- /usr/include/asm-generic/socket.h \
- /usr/include/x86_64-linux-gnu/asm/sockios.h \
- /usr/include/asm-generic/sockios.h \
- /usr/include/x86_64-linux-gnu/bits/types/struct_osockaddr.h \
- /usr/include/netinet/in.h \
- /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h \
- /usr/include/x86_64-linux-gnu/bits/in.h /usr/include/arpa/inet.h \
- ../machine/interrupt.h ../lib/list.h ../lib/list.cc ../machine/machine.h \
- ../machine/translate.h ../lib/bitmap.h ../threads/scheduler.h \
- ../threads/thread.h ../userprog/addrspace.h ../threads/ProcessArg.h \
- ../threads/stable.h ../threads/sem.h ../threads/synch.h \
- ../machine/stats.h ../threads/pcb.h
+ ../filesys/openfile.h ../machine/interrupt.h ../lib/list.h \
+ ../lib/list.cc ../machine/machine.h ../machine/translate.h \
+ ../lib/bitmap.h ../threads/scheduler.h ../threads/thread.h \
+ ../userprog/addrspace.h ../threads/ProcessArg.h ../threads/stable.h \
+ ../threads/sem.h ../threads/synch.h ../machine/stats.h ../threads/pcb.h
 sem.o: ../threads/sem.cc /usr/include/stdc-predef.h ../threads/sem.h \
  ../threads/synch.h ../lib/copyright.h ../lib/list.h ../lib/debug.h \
  ../lib/utility.h ../lib/sysdep.h /usr/include/c++/4.8/iostream \
@@ -3045,19 +2829,6 @@ sem.o: ../threads/sem.cc /usr/include/stdc-predef.h ../threads/sem.h \
  /usr/include/strings.h ../lib/list.cc ../threads/main.h \
  ../threads/kernel.h ../threads/alarm.h ../machine/callback.h \
  ../machine/timer.h ../filesys/filesys.h ../filesys/openfile.h \
- /usr/include/x86_64-linux-gnu/sys/socket.h \
- /usr/include/x86_64-linux-gnu/bits/types/struct_iovec.h \
- /usr/include/x86_64-linux-gnu/bits/socket.h \
- /usr/include/x86_64-linux-gnu/bits/socket_type.h \
- /usr/include/x86_64-linux-gnu/bits/sockaddr.h \
- /usr/include/x86_64-linux-gnu/asm/socket.h \
- /usr/include/asm-generic/socket.h \
- /usr/include/x86_64-linux-gnu/asm/sockios.h \
- /usr/include/asm-generic/sockios.h \
- /usr/include/x86_64-linux-gnu/bits/types/struct_osockaddr.h \
- /usr/include/netinet/in.h \
- /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h \
- /usr/include/x86_64-linux-gnu/bits/in.h /usr/include/arpa/inet.h \
  ../machine/interrupt.h ../machine/machine.h ../machine/translate.h \
  ../lib/bitmap.h ../threads/ptable.h ../threads/pcb.h \
  ../threads/ProcessArg.h ../threads/scheduler.h ../threads/thread.h \
@@ -3178,24 +2949,12 @@ stable.o: ../threads/stable.cc /usr/include/stdc-predef.h \
  /usr/include/x86_64-linux-gnu/bits/sys_errlist.h /usr/include/string.h \
  /usr/include/strings.h ../threads/kernel.h ../threads/alarm.h \
  ../machine/callback.h ../machine/timer.h ../filesys/filesys.h \
- ../filesys/openfile.h /usr/include/x86_64-linux-gnu/sys/socket.h \
- /usr/include/x86_64-linux-gnu/bits/types/struct_iovec.h \
- /usr/include/x86_64-linux-gnu/bits/socket.h \
- /usr/include/x86_64-linux-gnu/bits/socket_type.h \
- /usr/include/x86_64-linux-gnu/bits/sockaddr.h \
- /usr/include/x86_64-linux-gnu/asm/socket.h \
- /usr/include/asm-generic/socket.h \
- /usr/include/x86_64-linux-gnu/asm/sockios.h \
- /usr/include/asm-generic/sockios.h \
- /usr/include/x86_64-linux-gnu/bits/types/struct_osockaddr.h \
- /usr/include/netinet/in.h \
- /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h \
- /usr/include/x86_64-linux-gnu/bits/in.h /usr/include/arpa/inet.h \
- ../machine/interrupt.h ../lib/list.h ../lib/list.cc ../machine/machine.h \
- ../machine/translate.h ../lib/bitmap.h ../threads/ptable.h \
- ../threads/pcb.h ../threads/ProcessArg.h ../threads/synch.h \
- ../threads/thread.h ../userprog/addrspace.h ../threads/scheduler.h \
- ../machine/stats.h ../threads/sem.h
+ ../filesys/openfile.h ../machine/interrupt.h ../lib/list.h \
+ ../lib/list.cc ../machine/machine.h ../machine/translate.h \
+ ../lib/bitmap.h ../threads/ptable.h ../threads/pcb.h \
+ ../threads/ProcessArg.h ../threads/synch.h ../threads/thread.h \
+ ../userprog/addrspace.h ../threads/scheduler.h ../machine/stats.h \
+ ../threads/sem.h
 addrspace.o: ../userprog/addrspace.cc /usr/include/stdc-predef.h \
  ../userprog/addrspace.h ../lib/copyright.h ../filesys/filesys.h \
  ../lib/sysdep.h /usr/include/c++/4.8/iostream \
@@ -3311,31 +3070,16 @@ addrspace.o: ../userprog/addrspace.cc /usr/include/stdc-predef.h \
  /usr/include/x86_64-linux-gnu/bits/stdio_lim.h \
  /usr/include/x86_64-linux-gnu/bits/sys_errlist.h /usr/include/string.h \
  /usr/include/strings.h ../filesys/openfile.h ../lib/utility.h \
- /usr/include/x86_64-linux-gnu/sys/socket.h \
- /usr/include/x86_64-linux-gnu/bits/types/struct_iovec.h \
- /usr/include/x86_64-linux-gnu/bits/socket.h \
- /usr/include/x86_64-linux-gnu/bits/socket_type.h \
- /usr/include/x86_64-linux-gnu/bits/sockaddr.h \
- /usr/include/x86_64-linux-gnu/asm/socket.h \
- /usr/include/asm-generic/socket.h \
- /usr/include/x86_64-linux-gnu/asm/sockios.h \
- /usr/include/asm-generic/sockios.h \
- /usr/include/x86_64-linux-gnu/bits/types/struct_osockaddr.h \
- /usr/include/netinet/in.h \
- /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h \
- /usr/include/x86_64-linux-gnu/bits/in.h /usr/include/arpa/inet.h \
- ../lib/debug.h ../machine/machine.h ../machine/translate.h \
- ../lib/bitmap.h ../threads/main.h ../threads/kernel.h ../threads/alarm.h \
+ ../machine/machine.h ../machine/translate.h ../lib/bitmap.h \
+ ../threads/main.h ../lib/debug.h ../threads/kernel.h ../threads/alarm.h \
  ../machine/callback.h ../machine/timer.h ../machine/interrupt.h \
  ../lib/list.h ../lib/list.cc ../threads/ptable.h ../threads/pcb.h \
  ../threads/ProcessArg.h ../threads/synch.h ../threads/thread.h \
  ../threads/scheduler.h ../threads/stable.h ../threads/sem.h \
  ../machine/stats.h ../userprog/noff.h
 exception.o: ../userprog/exception.cc /usr/include/stdc-predef.h \
- ../lib/copyright.h ../userprog/ksyscall.h ../threads/kernel.h \
- ../threads/alarm.h ../lib/utility.h ../machine/callback.h \
- ../machine/timer.h ../lib/debug.h ../lib/sysdep.h \
- /usr/include/c++/4.8/iostream \
+ ../lib/copyright.h ../threads/main.h ../lib/debug.h ../lib/utility.h \
+ ../lib/sysdep.h /usr/include/c++/4.8/iostream \
  /usr/include/x86_64-linux-gnu/c++/4.8/bits/c++config.h \
  /usr/include/x86_64-linux-gnu/c++/4.8/bits/os_defines.h \
  /usr/include/features.h /usr/include/x86_64-linux-gnu/sys/cdefs.h \
@@ -3447,27 +3191,16 @@ exception.o: ../userprog/exception.cc /usr/include/stdc-predef.h \
  /usr/include/x86_64-linux-gnu/bits/_G_config.h \
  /usr/include/x86_64-linux-gnu/bits/stdio_lim.h \
  /usr/include/x86_64-linux-gnu/bits/sys_errlist.h /usr/include/string.h \
- /usr/include/strings.h ../filesys/filesys.h ../filesys/openfile.h \
- /usr/include/x86_64-linux-gnu/sys/socket.h \
- /usr/include/x86_64-linux-gnu/bits/types/struct_iovec.h \
- /usr/include/x86_64-linux-gnu/bits/socket.h \
- /usr/include/x86_64-linux-gnu/bits/socket_type.h \
- /usr/include/x86_64-linux-gnu/bits/sockaddr.h \
- /usr/include/x86_64-linux-gnu/asm/socket.h \
- /usr/include/asm-generic/socket.h \
- /usr/include/x86_64-linux-gnu/asm/sockios.h \
- /usr/include/asm-generic/sockios.h \
- /usr/include/x86_64-linux-gnu/bits/types/struct_osockaddr.h \
- /usr/include/netinet/in.h \
- /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h \
- /usr/include/x86_64-linux-gnu/bits/in.h /usr/include/arpa/inet.h \
- ../machine/interrupt.h ../lib/list.h ../lib/list.cc ../machine/machine.h \
- ../machine/translate.h ../lib/bitmap.h ../threads/ptable.h \
- ../threads/main.h ../threads/pcb.h ../threads/ProcessArg.h \
- ../threads/synch.h ../threads/thread.h ../userprog/addrspace.h \
- ../threads/scheduler.h ../threads/stable.h ../threads/sem.h \
- ../machine/stats.h ../userprog/synchconsole.h ../machine/console.h \
- ../userprog/syscall.h ../userprog/errno.h
+ /usr/include/strings.h ../threads/kernel.h ../threads/alarm.h \
+ ../machine/callback.h ../machine/timer.h ../filesys/filesys.h \
+ ../filesys/openfile.h ../machine/interrupt.h ../lib/list.h \
+ ../lib/list.cc ../machine/machine.h ../machine/translate.h \
+ ../lib/bitmap.h ../threads/ptable.h ../threads/pcb.h \
+ ../threads/ProcessArg.h ../threads/synch.h ../threads/thread.h \
+ ../userprog/addrspace.h ../threads/scheduler.h ../threads/stable.h \
+ ../threads/sem.h ../machine/stats.h ../userprog/syscall.h \
+ ../userprog/errno.h ../userprog/ksyscall.h ../userprog/synchconsole.h \
+ ../machine/console.h
 synchconsole.o: ../userprog/synchconsole.cc /usr/include/stdc-predef.h \
  ../lib/copyright.h ../userprog/synchconsole.h ../lib/utility.h \
  ../machine/callback.h ../machine/console.h ../threads/synch.h \
@@ -3586,25 +3319,11 @@ synchconsole.o: ../userprog/synchconsole.cc /usr/include/stdc-predef.h \
  /usr/include/x86_64-linux-gnu/bits/sys_errlist.h /usr/include/string.h \
  /usr/include/strings.h ../lib/list.cc ../threads/main.h \
  ../threads/kernel.h ../threads/alarm.h ../machine/timer.h \
- ../filesys/filesys.h ../filesys/openfile.h \
- /usr/include/x86_64-linux-gnu/sys/socket.h \
- /usr/include/x86_64-linux-gnu/bits/types/struct_iovec.h \
- /usr/include/x86_64-linux-gnu/bits/socket.h \
- /usr/include/x86_64-linux-gnu/bits/socket_type.h \
- /usr/include/x86_64-linux-gnu/bits/sockaddr.h \
- /usr/include/x86_64-linux-gnu/asm/socket.h \
- /usr/include/asm-generic/socket.h \
- /usr/include/x86_64-linux-gnu/asm/sockios.h \
- /usr/include/asm-generic/sockios.h \
- /usr/include/x86_64-linux-gnu/bits/types/struct_osockaddr.h \
- /usr/include/netinet/in.h \
- /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h \
- /usr/include/x86_64-linux-gnu/bits/in.h /usr/include/arpa/inet.h \
- ../machine/interrupt.h ../machine/machine.h ../machine/translate.h \
- ../lib/bitmap.h ../threads/ptable.h ../threads/pcb.h \
- ../threads/ProcessArg.h ../threads/scheduler.h ../threads/thread.h \
- ../userprog/addrspace.h ../threads/stable.h ../threads/sem.h \
- ../machine/stats.h
+ ../filesys/filesys.h ../filesys/openfile.h ../machine/interrupt.h \
+ ../machine/machine.h ../machine/translate.h ../lib/bitmap.h \
+ ../threads/ptable.h ../threads/pcb.h ../threads/ProcessArg.h \
+ ../threads/scheduler.h ../threads/thread.h ../userprog/addrspace.h \
+ ../threads/stable.h ../threads/sem.h ../machine/stats.h
 directory.o: ../filesys/directory.cc /usr/include/stdc-predef.h \
  ../lib/copyright.h ../lib/utility.h ../filesys/filehdr.h \
  ../machine/disk.h ../machine/callback.h ../filesys/pbitmap.h \
@@ -3721,20 +3440,7 @@ directory.o: ../filesys/directory.cc /usr/include/stdc-predef.h \
  /usr/include/x86_64-linux-gnu/bits/_G_config.h \
  /usr/include/x86_64-linux-gnu/bits/stdio_lim.h \
  /usr/include/x86_64-linux-gnu/bits/sys_errlist.h /usr/include/string.h \
- /usr/include/strings.h /usr/include/x86_64-linux-gnu/sys/socket.h \
- /usr/include/x86_64-linux-gnu/bits/types/struct_iovec.h \
- /usr/include/x86_64-linux-gnu/bits/socket.h \
- /usr/include/x86_64-linux-gnu/bits/socket_type.h \
- /usr/include/x86_64-linux-gnu/bits/sockaddr.h \
- /usr/include/x86_64-linux-gnu/asm/socket.h \
- /usr/include/asm-generic/socket.h \
- /usr/include/x86_64-linux-gnu/asm/sockios.h \
- /usr/include/asm-generic/sockios.h \
- /usr/include/x86_64-linux-gnu/bits/types/struct_osockaddr.h \
- /usr/include/netinet/in.h \
- /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h \
- /usr/include/x86_64-linux-gnu/bits/in.h /usr/include/arpa/inet.h \
- ../lib/debug.h ../filesys/directory.h
+ /usr/include/strings.h ../filesys/directory.h
 filehdr.o: ../filesys/filehdr.cc /usr/include/stdc-predef.h \
  ../lib/copyright.h ../filesys/filehdr.h ../machine/disk.h \
  ../lib/utility.h ../machine/callback.h ../filesys/pbitmap.h \
@@ -3851,26 +3557,14 @@ filehdr.o: ../filesys/filehdr.cc /usr/include/stdc-predef.h \
  /usr/include/x86_64-linux-gnu/bits/_G_config.h \
  /usr/include/x86_64-linux-gnu/bits/stdio_lim.h \
  /usr/include/x86_64-linux-gnu/bits/sys_errlist.h /usr/include/string.h \
- /usr/include/strings.h /usr/include/x86_64-linux-gnu/sys/socket.h \
- /usr/include/x86_64-linux-gnu/bits/types/struct_iovec.h \
- /usr/include/x86_64-linux-gnu/bits/socket.h \
- /usr/include/x86_64-linux-gnu/bits/socket_type.h \
- /usr/include/x86_64-linux-gnu/bits/sockaddr.h \
- /usr/include/x86_64-linux-gnu/asm/socket.h \
- /usr/include/asm-generic/socket.h \
- /usr/include/x86_64-linux-gnu/asm/sockios.h \
- /usr/include/asm-generic/sockios.h \
- /usr/include/x86_64-linux-gnu/bits/types/struct_osockaddr.h \
- /usr/include/netinet/in.h \
- /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h \
- /usr/include/x86_64-linux-gnu/bits/in.h /usr/include/arpa/inet.h \
- ../lib/debug.h ../filesys/synchdisk.h ../threads/synch.h ../lib/list.h \
- ../lib/list.cc ../threads/main.h ../threads/kernel.h ../threads/alarm.h \
- ../machine/timer.h ../filesys/filesys.h ../machine/interrupt.h \
- ../machine/machine.h ../machine/translate.h ../threads/ptable.h \
- ../threads/pcb.h ../threads/ProcessArg.h ../threads/scheduler.h \
- ../threads/thread.h ../userprog/addrspace.h ../threads/stable.h \
- ../threads/sem.h ../machine/stats.h
+ /usr/include/strings.h ../lib/debug.h ../filesys/synchdisk.h \
+ ../threads/synch.h ../lib/list.h ../lib/list.cc ../threads/main.h \
+ ../threads/kernel.h ../threads/alarm.h ../machine/timer.h \
+ ../filesys/filesys.h ../machine/interrupt.h ../machine/machine.h \
+ ../machine/translate.h ../threads/ptable.h ../threads/pcb.h \
+ ../threads/ProcessArg.h ../threads/scheduler.h ../threads/thread.h \
+ ../userprog/addrspace.h ../threads/stable.h ../threads/sem.h \
+ ../machine/stats.h
 filesys.o: ../filesys/filesys.cc /usr/include/stdc-predef.h
 pbitmap.o: ../filesys/pbitmap.cc /usr/include/stdc-predef.h \
  ../lib/copyright.h ../filesys/pbitmap.h ../lib/bitmap.h ../lib/utility.h \
@@ -3986,20 +3680,7 @@ pbitmap.o: ../filesys/pbitmap.cc /usr/include/stdc-predef.h \
  /usr/include/x86_64-linux-gnu/bits/_G_config.h \
  /usr/include/x86_64-linux-gnu/bits/stdio_lim.h \
  /usr/include/x86_64-linux-gnu/bits/sys_errlist.h /usr/include/string.h \
- /usr/include/strings.h /usr/include/x86_64-linux-gnu/sys/socket.h \
- /usr/include/x86_64-linux-gnu/bits/types/struct_iovec.h \
- /usr/include/x86_64-linux-gnu/bits/socket.h \
- /usr/include/x86_64-linux-gnu/bits/socket_type.h \
- /usr/include/x86_64-linux-gnu/bits/sockaddr.h \
- /usr/include/x86_64-linux-gnu/asm/socket.h \
- /usr/include/asm-generic/socket.h \
- /usr/include/x86_64-linux-gnu/asm/sockios.h \
- /usr/include/asm-generic/sockios.h \
- /usr/include/x86_64-linux-gnu/bits/types/struct_osockaddr.h \
- /usr/include/netinet/in.h \
- /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h \
- /usr/include/x86_64-linux-gnu/bits/in.h /usr/include/arpa/inet.h \
- ../lib/debug.h
+ /usr/include/strings.h
 openfile.o: ../filesys/openfile.cc /usr/include/stdc-predef.h
 synchdisk.o: ../filesys/synchdisk.cc /usr/include/stdc-predef.h \
  ../lib/copyright.h ../filesys/synchdisk.h ../machine/disk.h \
@@ -4118,25 +3799,11 @@ synchdisk.o: ../filesys/synchdisk.cc /usr/include/stdc-predef.h \
  /usr/include/x86_64-linux-gnu/bits/sys_errlist.h /usr/include/string.h \
  /usr/include/strings.h ../lib/list.cc ../threads/main.h \
  ../threads/kernel.h ../threads/alarm.h ../machine/timer.h \
- ../filesys/filesys.h ../filesys/openfile.h \
- /usr/include/x86_64-linux-gnu/sys/socket.h \
- /usr/include/x86_64-linux-gnu/bits/types/struct_iovec.h \
- /usr/include/x86_64-linux-gnu/bits/socket.h \
- /usr/include/x86_64-linux-gnu/bits/socket_type.h \
- /usr/include/x86_64-linux-gnu/bits/sockaddr.h \
- /usr/include/x86_64-linux-gnu/asm/socket.h \
- /usr/include/asm-generic/socket.h \
- /usr/include/x86_64-linux-gnu/asm/sockios.h \
- /usr/include/asm-generic/sockios.h \
- /usr/include/x86_64-linux-gnu/bits/types/struct_osockaddr.h \
- /usr/include/netinet/in.h \
- /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h \
- /usr/include/x86_64-linux-gnu/bits/in.h /usr/include/arpa/inet.h \
- ../machine/interrupt.h ../machine/machine.h ../machine/translate.h \
- ../lib/bitmap.h ../threads/ptable.h ../threads/pcb.h \
- ../threads/ProcessArg.h ../threads/scheduler.h ../threads/thread.h \
- ../userprog/addrspace.h ../threads/stable.h ../threads/sem.h \
- ../machine/stats.h
+ ../filesys/filesys.h ../filesys/openfile.h ../machine/interrupt.h \
+ ../machine/machine.h ../machine/translate.h ../lib/bitmap.h \
+ ../threads/ptable.h ../threads/pcb.h ../threads/ProcessArg.h \
+ ../threads/scheduler.h ../threads/thread.h ../userprog/addrspace.h \
+ ../threads/stable.h ../threads/sem.h ../machine/stats.h
 post.o: ../network/post.cc /usr/include/stdc-predef.h ../lib/copyright.h \
  ../network/post.h ../lib/utility.h ../machine/callback.h \
  ../machine/network.h ../threads/synchlist.h ../lib/list.h ../lib/debug.h \
@@ -4255,19 +3922,6 @@ post.o: ../network/post.cc /usr/include/stdc-predef.h ../lib/copyright.h \
  /usr/include/strings.h ../lib/list.cc ../threads/synch.h \
  ../threads/main.h ../threads/kernel.h ../threads/alarm.h \
  ../machine/timer.h ../filesys/filesys.h ../filesys/openfile.h \
- /usr/include/x86_64-linux-gnu/sys/socket.h \
- /usr/include/x86_64-linux-gnu/bits/types/struct_iovec.h \
- /usr/include/x86_64-linux-gnu/bits/socket.h \
- /usr/include/x86_64-linux-gnu/bits/socket_type.h \
- /usr/include/x86_64-linux-gnu/bits/sockaddr.h \
- /usr/include/x86_64-linux-gnu/asm/socket.h \
- /usr/include/asm-generic/socket.h \
- /usr/include/x86_64-linux-gnu/asm/sockios.h \
- /usr/include/asm-generic/sockios.h \
- /usr/include/x86_64-linux-gnu/bits/types/struct_osockaddr.h \
- /usr/include/netinet/in.h \
- /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h \
- /usr/include/x86_64-linux-gnu/bits/in.h /usr/include/arpa/inet.h \
  ../machine/interrupt.h ../machine/machine.h ../machine/translate.h \
  ../lib/bitmap.h ../threads/ptable.h ../threads/pcb.h \
  ../threads/ProcessArg.h ../threads/scheduler.h ../threads/thread.h \

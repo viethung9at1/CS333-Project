@@ -67,16 +67,16 @@ int main() {
     if (Connect(sId, IP, PP) == 0){
         if (Write(content, 101, sId) > 0){
             if (Read(content,101,sId) > 0){
-                _strcpy(sms, "Receive success !");Write(sms, 20, _ConsoleOutput);
+                _strcpy(sms, "Receive success !\n");Write(sms, 20, _ConsoleOutput);
                 Write(content, len, Id2);
             }else{ 
-                _strcpy(sms, "Receive fail !");Write(sms, 20, _ConsoleOutput);
+                _strcpy(sms, "Receive fail !\n");Write(sms, 20, _ConsoleOutput);
             }
         }else{
-            _strcpy(sms, "Send fail !");Write(sms, 20, _ConsoleOutput);
+            _strcpy(sms, "Send fail !\n");Write(sms, 20, _ConsoleOutput);
         }
     }else{
-        _strcpy(sms, "Connect fail !");Write(sms, 20, _ConsoleOutput);
+        _strcpy(sms, "Connect fail !\n");Write(sms, 20, _ConsoleOutput);
     }
 
     Close(Id1);

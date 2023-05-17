@@ -227,8 +227,8 @@ int main(int argc, char **argv) {
       cout << "Partial usage: nachos [-l] [-D]\n";
 #endif // FILESYS_STUB
     } else {
-      printf("User argument: %s\n", argv[i]);
-      strcpy(args[c++], argv[i]);
+      // printf("User argument: %s\n", argv[i]);
+      // strcpy(args[c++], argv[i]);
     }
   }
 
@@ -237,6 +237,7 @@ int main(int argc, char **argv) {
   for (int i = 0; i < c; i++) {
     _args[i] = new char[100];
     strcpy(_args[i], args[i]);
+    // printf("args[%d] = %s\n", i, _args[i]);
   }
   debug = new Debug(debugArg);
 

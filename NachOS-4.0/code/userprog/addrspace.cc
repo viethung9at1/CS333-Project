@@ -124,8 +124,7 @@ AddrSpace::~AddrSpace() {
 //----------------------------------------------------------------------
 
 bool AddrSpace::Load(char *fileName, int argc, char **argv) {
-  OpenFile *executable = kernel -> fileSystem->Open(fileName);
-
+  OpenFile *executable = kernel->fileSystem->Open(fileName);
   NoffHeader noffH;
   unsigned int size;
 
@@ -277,11 +276,12 @@ bool AddrSpace::Load(char *fileName, int argc, char **argv) {
 //----------------------------------------------------------------------
 
 void AddrSpace::Execute() {
-
   kernel->currentThread->space = this;
 
   this->InitRegisters(); // set the initial register values
+  // printf("done init registers\n");
   this->RestoreState(); // load page table register
+  // printf("done restore state\n");
   kernel->machine->Run(); // jump to the user progam
 
   ASSERTNOTREACHED(); // machine->Run never returns;
@@ -325,6 +325,7 @@ void AddrSpace::InitRegisters() {
   machine->WriteRegister(4, argc);
   machine->WriteRegister(5, argv);
 
+  //   printf("argc = %d, argv = %d, stackptr = %d\n", argc, argv, stackptr);
 }
 
 //----------------------------------------------------------------------

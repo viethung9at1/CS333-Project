@@ -1,6 +1,7 @@
 #include "syscall.h" 
 #include "copyright.h" 
 
+
 int getlengthoffile(int file){
     int len;
     len = Seek(-1, file);
@@ -20,15 +21,16 @@ int main() {
     char* filename;
     char* content;
 
-    _strcpy(sms, "file name:");Write(sms, MaxFileLength, _ConsoleOutput);
-
-    Read(filename, MaxFileLength, _ConsoleInput);
-    
-    fileId = Open(filename, 1);
-    len = getlengthoffile(fileId);
-    Read(content, len, fileId);
-    
-    Write(content, len, _ConsoleOutput);
-
-    Halt(); 
+    fileId = Open("info.txt", 1);
+    if (fileId == -1){
+        _strcpy(sms, "fail\n");Write(sms, MaxFileLength, _ConsoleOutput);
+    }else{
+        Wait("lock");        
+        len = getlengthoffile(fileId);
+        Read(content, len, fileId);
+        Write(content, len, _ConsoleOutput);
+        Close(fileId);
+        Signal("lock");
+    }
+    Exit(0);
 } 

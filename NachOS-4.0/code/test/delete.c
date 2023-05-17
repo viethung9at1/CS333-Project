@@ -17,5 +17,5 @@ int main() {
     Read(filename, MaxFileLength, _ConsoleInput);
     
     Remove(filename);
-    Exit(0);
+    Halt(); 
 } 

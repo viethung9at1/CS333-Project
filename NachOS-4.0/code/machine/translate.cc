@@ -171,13 +171,13 @@ bool Machine::WriteMem(int addr, int size, int value) {
 //	address in "physAddr".  If there was an error, returns the type
 //	of the exception.
 //
-//	"vAddr" -- the virtual address to translate
+//	"virtAddr" -- the virtual address to translate
 //	"physAddr" -- the place to store the physical address
 //	"size" -- the amount of memory being read or written
 // 	"writing" -- if TRUE, check the "read-only" bit in the TLB
 //----------------------------------------------------------------------
 
-ExceptionType Machine::Translate(int vAddr, int *physAddr, int size,
+ExceptionType Machine::Translate(int virtAddr, int *physAddr, int size,
                                  bool writing) {
   int i;
   unsigned int vpn, offset;
@@ -185,11 +185,11 @@ ExceptionType Machine::Translate(int vAddr, int *physAddr, int size,
   unsigned int pageFrame;
 
   DEBUG(dbgAddr,
-        "\tTranslate " << vAddr << (writing ? " , write" : " , read"));
+        "\tTranslate " << virtAddr << (writing ? " , write" : " , read"));
 
   // check for alignment errors
-  if (((size == 4) && (vAddr & 0x3)) || ((size == 2) && (vAddr & 0x1))) {
-    DEBUG(dbgAddr, "Alignment problem at " << vAddr << ", size " << size);
+  if (((size == 4) && (virtAddr & 0x3)) || ((size == 2) && (virtAddr & 0x1))) {
+    DEBUG(dbgAddr, "Alignment problem at " << virtAddr << ", size " << size);
     return AddressErrorException;
   }
 
@@ -199,15 +199,15 @@ ExceptionType Machine::Translate(int vAddr, int *physAddr, int size,
 
   // calculate the virtual page number, and offset within the page,
   // from the virtual address
-  vpn = (unsigned)vAddr / PageSize;
-  offset = (unsigned)vAddr % PageSize;
+  vpn = (unsigned)virtAddr / PageSize;
+  offset = (unsigned)virtAddr % PageSize;
 
   if (tlb == NULL) { // => page table => vpn is index into table
     if (vpn >= pageTableSize) {
-      DEBUG(dbgAddr, "Illegal virtual page # " << vAddr);
+      DEBUG(dbgAddr, "Illegal virtual page # " << virtAddr);
       return AddressErrorException;
     } else if (!pageTable[vpn].valid) {
-      DEBUG(dbgAddr, "Invalid virtual page # " << vAddr);
+      DEBUG(dbgAddr, "Invalid virtual page # " << virtAddr);
       return PageFaultException;
     }
     entry = &pageTable[vpn];
@@ -226,7 +226,7 @@ ExceptionType Machine::Translate(int vAddr, int *physAddr, int size,
   }
 
   if (entry->readOnly && writing) { // trying to write to a read-only page
-    DEBUG(dbgAddr, "Write to read-only page at " << vAddr);
+    DEBUG(dbgAddr, "Write to read-only page at " << virtAddr);
     return ReadOnlyException;
   }
   pageFrame = entry->physicalPage;

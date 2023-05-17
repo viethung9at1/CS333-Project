@@ -13,31 +13,26 @@ void _strcpy(char* dest, const char* src) {
     }
     *dest = '\0';
 }
-int main() { 
+
+int main(int argc, char **argv) { 
     int Id1, len, Id2;
     char fileA[MaxFileLength+1], fileB[MaxFileLength+1], sms[100];
     char* content;
 
-    _strcpy(sms, "file A:");Write(sms, 30, _ConsoleOutput);
-
-    Read(fileA, MaxFileLength, _ConsoleInput);
-
-    _strcpy(sms, "file B:");Write(sms, 30, _ConsoleOutput);
-
-    Read(fileB, MaxFileLength, _ConsoleInput);
+    if (argc != 3)
+        return -1;
     
-    Id1 = Open(fileA, 0);
-    Id2 = Open(fileB, 1);
+    Id1 = Open(argv[1], 1);
+    Id2 = Open(argv[2], _WriteNEW);
 
-    len = getlengthoffile(Id2);
+    len = getlengthoffile(Id1);
 
-    Read(content, len, Id2);
-    Seek(-1, Id1);
-    Write(content, len, Id1);
+    Read(content, len, Id1);
+    Write(content, len, Id2);
 
 
     Close(Id1);
     Close(Id2);
 
-    Halt(); 
+    Exit(0);
 } 

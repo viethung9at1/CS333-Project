@@ -81,7 +81,7 @@ private:
   void *machineState[MachineStateSize]; // all registers except for stackTop
 
 public:
-  int pId = 0;
+  int processID = 0;
   Thread(char *debugName, int processID = 0); // initialize a Thread
   ~Thread();                                  // deallocate a Thread
                                               // NOTE -- thread being deleted
@@ -90,7 +90,7 @@ public:
 
   // basic thread operations
 
-  void Fork(VoidFunctionPtr func, void *arg);
+  void Fork(VoidFunctionPtr func, void *arg, bool isMyProcessArg = false);
   // Make thread run (*func)(arg)
   void Yield();               // Relinquish the CPU if any
                               // other thread is runnable

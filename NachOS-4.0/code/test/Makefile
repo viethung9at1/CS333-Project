@@ -112,7 +112,7 @@ ifeq ($(hosttype),unknown)
 PROGRAMS = unknownhost
 else
 # change this if you create a new test program!
-PROGRAMS = add halt shell matmult sort segments createfile delete cat concatenate copy echoclient fileclient ping pong execv shellPP multi_arg shellTest
+PROGRAMS = add halt shell matmult sort segments createfile delete cat concatenate copy echoclient fileclient ping pong pingpong testSem Semaphore shellTest cat2 copy2
 endif
 
 all: $(PROGRAMS)
@@ -198,43 +198,54 @@ fileclient.o: fileclient.c
 fileclient: fileclient.o start.o
 	$(LD) $(LDFLAGS) start.o fileclient.o -o fileclient.coff
 	$(COFF2NOFF) fileclient.coff fileclient
-
-pong.o: pong.c
-	$(CC) $(CFLAGS) -c pong.c
-pong: pong.o start.o
-	$(LD) $(LDFLAGS) start.o pong.o -o pong.coff
-	$(COFF2NOFF) pong.coff pong
 	
 ping.o: ping.c
 	$(CC) $(CFLAGS) -c ping.c
 ping: ping.o start.o
 	$(LD) $(LDFLAGS) start.o ping.o -o ping.coff
 	$(COFF2NOFF) ping.coff ping
-
-shellPP.o: shellPP.c
-	$(CC) $(CFLAGS) -c shellPP.c
-shellPP: shellPP.o start.o
-	$(LD) $(LDFLAGS) start.o shellPP.o -o shellPP.coff
-	$(COFF2NOFF) shellPP.coff shellPP
-
-multi_arg.o: multi_arg.c
-	$(CC) $(CFLAGS) -c multi_arg.c
-multi_arg: multi_arg.o start.o
-	$(LD) $(LDFLAGS) start.o multi_arg.o -o multi_arg.coff
-	$(COFF2NOFF) multi_arg.coff multi_arg
-
-execv.o: execv.c
-	$(CC) $(CFLAGS) -c execv.c
-execv: execv.o start.o
-	$(LD) $(LDFLAGS) start.o execv.o -o execv.coff
-	$(COFF2NOFF) execv.coff execv
-
+	
+pong.o: pong.c
+	$(CC) $(CFLAGS) -c pong.c
+pong: pong.o start.o
+	$(LD) $(LDFLAGS) start.o pong.o -o pong.coff
+	$(COFF2NOFF) pong.coff pong
+	
+pingpong.o: pingpong.c
+	$(CC) $(CFLAGS) -c pingpong.c
+pingpong: pingpong.o start.o
+	$(LD) $(LDFLAGS) start.o pingpong.o -o pingpong.coff
+	$(COFF2NOFF) pingpong.coff pingpong
+	
+testSem.o: testSem.c
+	$(CC) $(CFLAGS) -c testSem.c
+testSem: testSem.o start.o
+	$(LD) $(LDFLAGS) start.o testSem.o -o testSem.coff
+	$(COFF2NOFF) testSem.coff testSem
+	
+Semaphore.o: Semaphore.c
+	$(CC) $(CFLAGS) -c Semaphore.c
+Semaphore: Semaphore.o start.o
+	$(LD) $(LDFLAGS) start.o Semaphore.o -o Semaphore.coff
+	$(COFF2NOFF) Semaphore.coff Semaphore
+	
 shellTest.o: shellTest.c
 	$(CC) $(CFLAGS) -c shellTest.c
 shellTest: shellTest.o start.o
 	$(LD) $(LDFLAGS) start.o shellTest.o -o shellTest.coff
 	$(COFF2NOFF) shellTest.coff shellTest
-
+	
+cat2.o: cat2.c
+	$(CC) $(CFLAGS) -c cat2.c
+cat2: cat2.o start.o
+	$(LD) $(LDFLAGS) start.o cat2.o -o cat2.coff
+	$(COFF2NOFF) cat2.coff cat2
+	
+copy2.o: copy2.c
+	$(CC) $(CFLAGS) -c copy2.c
+copy2: copy2.o start.o
+	$(LD) $(LDFLAGS) start.o copy2.o -o copy2.coff
+	$(COFF2NOFF) copy2.coff copy2
 
 clean:
 	$(RM) -f *.o *.ii

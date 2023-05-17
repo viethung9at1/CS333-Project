@@ -11,11 +11,11 @@ Sem::~Sem() {
 }
 
 void Sem::wait() {
-  sem->P();
+  sem->P(); // Conduct the waiting function
 }
 
 void Sem::signal() {
-  sem->V(); 
+  sem->V(); // Release semaphore
 }
 
 char *Sem::GetName() { return this->name; }

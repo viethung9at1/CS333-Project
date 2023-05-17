@@ -57,16 +57,16 @@ int main() {
             if (Write(content, 101, sId[i]) > 0){
                 //Receive(sId[i], content, 101)
                 if (Read(content,101,sId[i]) > 0){
-                    _strcpy(sms, "Receive:");Write(sms, 20, _ConsoleOutput);
+                    _strcpy(sms, "Receive:\n");Write(sms, 20, _ConsoleOutput);
                     Write(content, 101, _ConsoleOutput);
                 }else{ 
-                    _strcpy(sms, "Receive fail !");Write(sms, 20, _ConsoleOutput);
+                    _strcpy(sms, "Receive fail !\n");Write(sms, 20, _ConsoleOutput);
                 }
             }else{
-                _strcpy(sms, "Send fail !");Write(sms, 20, _ConsoleOutput);
+                _strcpy(sms, "Send fail !\n");Write(sms, 20, _ConsoleOutput);
             }
         }else{
-            _strcpy(sms, "Connect fail !");Write(sms, 20, _ConsoleOutput);
+            _strcpy(sms, "Connect fail !\n");Write(sms, 20, _ConsoleOutput);
         }
     }
     // CLOSE

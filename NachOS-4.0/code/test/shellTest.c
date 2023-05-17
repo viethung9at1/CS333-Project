@@ -1,6 +1,6 @@
 #include "syscall.h"
 
-#define BUFFER_SIZE 100
+#define BUFFER_SIZE 200
 
 int argc = 0;
 char argv[5][BUFFER_SIZE];
@@ -40,40 +40,6 @@ void print(char *str) {
   Write(msg, len, 1);
 }
 
-
-void intToStr(int num, char *str) {
-    
-    int len = 0;
-    int tmp = 0;
-    int i;
-
-    if (num == 0) {
-        *str++ = '0';
-        *str = '\0';
-        return;
-    }
-
-    if (num < 0) {
-        *str++ = '-';
-        num = -num;
-    }
-
-    tmp = num;
-
-    while (tmp) {
-        len++;
-        tmp /= 10;
-    }
-
-    str[len] = '\0';
-
-    for ( i = len - 1; i >= 0; i--) {
-        str[i] = num % 10 + '0';
-        num /= 10;
-    }
-}
-
-
 void split(char *str) {
   int i = 0, j = 0, k = 0;
   while (str[i] != '\0') {
@@ -96,31 +62,26 @@ void split(char *str) {
   argc = j;
 }
 
-int main()
-{
-    int proc, status;
-    char buffer[BUFFER_SIZE], tmp[50];
-    SpaceId newProc;
+int main() {
+  int status;
+  int newProc;
+  char buffer[BUFFER_SIZE];
+  while (1) {
+    print("\nShell: ");
+    Read(buffer, 60, 0);
+    split(buffer);
 
-    while(1){
-        print("Shell: ");
-        Read(buffer, 60, 0);
-        split(buffer);
+    if (argc == 0)
+      continue;
+    if (argc == 1 && _strcmp(argv[0], "exit") == 0)
+      break;
+    newProc = ExecV(argc, argv);
 
-        if (argc == 0)
-            continue;
-        if (argc == 1 && _strcmp(argv[0], "exit") == 0)
-            break;
-        proc = Exec(argv[0]);
-
-        if (newProc == -1) {
-            print("Error, executable not found.\n");
-        } else {
-            status = Join(newProc);
-            print("OK");
-            //intToStr(status, tmp);
-            //print(tmp);
-        }
+    if (newProc == -1) {
+      print("Error, executable not found.\n");
+    } else {
+      status = Join(newProc);
     }
-    Exit(0);
+  }
+  Exit(0);
 }
