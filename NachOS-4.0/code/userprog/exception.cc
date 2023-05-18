@@ -664,6 +664,7 @@ void handle_SC_ExecV(){
     argv[i] = User2System(virtAddr, MaxFileLength + 1);
     virtAddr += 100;
   }
+  cout << argv
 
   kernel->machine->WriteRegister(2, kernel->pTable->ExecUpdate(argc, argv));
   return PCIncrease();
